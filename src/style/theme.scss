@@ -1,0 +1,29 @@
+// ========== 颜色系统 ==========
+// 主色
+$color-primary: #4caf50 !default; // 农产品主绿
+$color-primary-dark: #388e3c !default;
+$color-primary-light: #c8e6c9 !default;
+
+// 功能色
+$color-success: $color-primary !default;
+$color-warning: #ffc107 !default; // 阳光黄
+$color-error: #f44336 !default;
+$color-info: #03a9f4 !default; // 水蓝
+
+// 中性色
+$color-text: rgba(0, 0, 0, 0.85) !default;
+$color-text-secondary: rgba(0, 0, 0, 0.6) !default;
+$color-border: #e0e0e0 !default;
+$color-bg: #f5f5f5 !default;
+$color-bg-light: #ffffff !default;
+
+// ========== Unocss 映射变量 ==========
+:root,
+page {
+  --primary: $color-primary;
+  --primary-dark: $color-primary-dark;
+  --primary-light: $color-primary-light;
+  --success: $color-success;
+  --warning: $color-warning;
+  --error: $color-error;
+}
