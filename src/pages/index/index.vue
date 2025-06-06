@@ -19,7 +19,7 @@
           <wd-tab :title="`标签${item}`">
             <view class="content h-50 bg-green-50 flex flex-col items-center justify-around">
               <view v-for="int in 4">
-                <view>title仅此是最大的吐蕃</view>
+                <view @click="jumpDetailsPage">title仅此是最大的吐蕃</view>
               </view>
             </view>
           </wd-tab>
@@ -70,6 +70,10 @@ defineOptions({
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
+//跳转对应的页面
+const jumpDetailsPage = (id) => {
+  uni.navigateTo({ url: `/pages/news/index` })
+}
 </script>
 
 <style lang="scss" scoped>

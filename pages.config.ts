@@ -41,17 +41,12 @@ export default defineUniPages({
         text: '供需对接',
       },
       {
-        iconPath: 'static/tabbar/shop.png',
-        selectedIconPath: 'static/tabbar/shopHL.png',
+        iconPath: 'static/tabbar/publish.png',
+        selectedIconPath: 'static/tabbar/publishHL.png',
         pagePath: 'pages/goods/publish/index',
         text: '发布',
       },
-      {
-        iconPath: 'static/tabbar/example.png',
-        selectedIconPath: 'static/tabbar/exampleHL.png',
-        pagePath: 'pages/about/about',
-        text: '关于',
-      },
+
       {
         iconPath: 'static/tabbar/personal.png',
         selectedIconPath: 'static/tabbar/personalHL.png',
