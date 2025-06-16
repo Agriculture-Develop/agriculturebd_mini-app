@@ -25,17 +25,20 @@
               />
             </view>
 
-            <!-- 性别 -->
+            <!-- 角色-->
             <view class="sex-field">
-              <text class="field-label">性别</text>
+              <text class="field-label">角色</text>
               <wd-radio-group
                 v-model="formData.sex"
                 shape="button"
-                :rules="[{ required: true, message: '请选择性别' }]"
+                :rules="[{ required: true, message: '请选择角色' }]"
               >
-                <wd-radio :value="'1'">男</wd-radio>
-                <wd-radio :value="'0'">女</wd-radio>
+                <wd-radio :value="'1'">农户</wd-radio>
+                <wd-radio :value="'0'">供应商</wd-radio>
               </wd-radio-group>
+            </view>
+            <view>
+              <text class="field-label">更换头像</text>
             </view>
           </wd-cell-group>
         </wd-form>

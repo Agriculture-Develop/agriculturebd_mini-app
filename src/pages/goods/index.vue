@@ -11,21 +11,29 @@
     <wd-navbar>
       <template #title>
         <view class="search-box">
-          <wd-search v-model="keyword" hide-cancel />
+          <wd-search v-model="keyword" hide-cancel @search="handleSearch" />
         </view>
       </template>
     </wd-navbar>
-    <view v-for="(item, index) in goodsList">
-      <Goods :product="goodsList[index]" />
+
+    <!-- 根据搜索结果或全部数据渲染 -->
+    <view v-for="(item, index) in filteredList" :key="item.id">
+      <Goods :product="item" />
     </view>
+
+    <!-- 无搜索结果提示 -->
+    <view v-if="keyword && filteredList.length === 0" class="empty-tips">没有找到相关商品</view>
   </view>
 </template>
 
 <script lang="ts" setup>
 import Goods from './components/goods/index.vue'
+import { ref, computed } from 'vue'
+
 const { safeAreaInsets } = uni.getSystemInfoSync()
-const keyword = ref<string>('搜索')
-const value = ref<string>('')
+const keyword = ref<string>('')
+
+// 商品数据
 const goodsList = ref([
   {
     id: 1,
@@ -49,6 +57,20 @@ const goodsList = ref([
     time: '10min前',
   },
 ])
+
+// 计算属性实现过滤
+const filteredList = computed(() => {
+  if (!keyword.value.trim()) return goodsList.value
+
+  const lowerKeyword = keyword.value.toLowerCase()
+  return goodsList.value.filter((item) => item.description.toLowerCase().includes(lowerKeyword))
+})
+
+// 搜索处理函数
+const handleSearch = () => {
+  console.log('搜索关键词:', keyword.value)
+  console.log('搜索结果:', filteredList.value)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -58,6 +80,7 @@ const goodsList = ref([
   align-items: center;
   --wot-search-padding: 0;
   --wot-search-side-padding: 0;
+
   :deep() {
     .wd-search {
       background: transparent !important;
@@ -67,5 +90,11 @@ const goodsList = ref([
       }
     }
   }
+}
+
+.empty-tips {
+  padding: 20px;
+  text-align: center;
+  color: #999;
 }
 </style>

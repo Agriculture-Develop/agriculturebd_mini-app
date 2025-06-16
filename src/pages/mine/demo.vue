@@ -26,7 +26,7 @@
         <input
           type="nickname"
           class="weui-input"
-          placeholder="请输入昵称111"
+          placeholder="请输入昵称"
           v-model="userStore.userInfo.username"
         />
         <!-- #endif -->
@@ -49,6 +49,30 @@
         <wd-cell title="账号安全" is-link @click="handlePassword">
           <template #icon>
             <wd-icon name="lock-on" size="20px"></wd-icon>
+          </template>
+        </wd-cell>
+      </view>
+
+      <view class="cell-group">
+        <view class="group-title">通用设置</view>
+        <wd-cell title="消息通知" is-link @click="handleInform">
+          <template #icon>
+            <wd-icon name="notification" size="20px"></wd-icon>
+          </template>
+        </wd-cell>
+        <wd-cell title="清理缓存" is-link @click="handleClearCache">
+          <template #icon>
+            <wd-icon name="clear" size="20px"></wd-icon>
+          </template>
+        </wd-cell>
+        <wd-cell title="应用更新" is-link @click="handleAppUpdate">
+          <template #icon>
+            <wd-icon name="refresh1" size="20px"></wd-icon>
+          </template>
+        </wd-cell>
+        <wd-cell title="关于我们" is-link @click="handleAbout">
+          <template #icon>
+            <wd-icon name="info-circle" size="20px"></wd-icon>
           </template>
         </wd-cell>
       </view>
@@ -136,7 +160,73 @@ const handleProfileInfo = () => {
 const handlePassword = () => {
   uni.navigateTo({ url: `/pages/mine/password/index` })
 }
+// 消息通知
+const handleInform = () => {
+  uni.navigateTo({ url: `/pages/mine/inform/index` })
+  toast.success('功能开发中')
+}
+// 应用更新
+const handleAppUpdate = () => {
+  // #ifdef MP
+  // #ifndef MP-HARMONY
+  const updateManager = uni.getUpdateManager()
+  updateManager.onCheckForUpdate(function (res) {
+    // 请求完新版本信息的回调
+    // console.log(res.hasUpdate)
+    if (res.hasUpdate) {
+      toast.success('检测到新版本，正在下载中...')
+    } else {
+      toast.success('已是最新版本')
+    }
+  })
+  updateManager.onUpdateReady(function (res) {
+    uni.showModal({
+      title: '更新提示',
+      content: '新版本已经准备好，是否重启应用？',
+      success(res) {
+        if (res.confirm) {
+          // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+          updateManager.applyUpdate()
+        }
+      },
+    })
+  })
+  updateManager.onUpdateFailed(function (res) {
+    // 新的版本下载失败
+    toast.error('新版本下载失败')
+  })
+  // #endif
+  // #endif
 
+  // #ifndef MP
+  toast.success('功能开发中')
+  // #endif
+}
+// 关于我们
+const handleAbout = () => {
+  uni.navigateTo({ url: `/pages/mine/about/index` })
+}
+// 清除缓存
+const handleClearCache = () => {
+  uni.showModal({
+    title: '清除缓存',
+    content: '确定要清除所有缓存吗？\n清除后需要重新登录',
+    success: (res) => {
+      if (res.confirm) {
+        try {
+          // 清除所有缓存
+          uni.clearStorageSync()
+          // 清除用户信息并跳转到登录页
+          useUserStore().logout()
+          toast.success('清除缓存成功')
+        } catch (err) {
+          console.error('清除缓存失败:', err)
+          toast.error('清除缓存失败')
+        }
+      }
+    },
+  })
+}
 // 退出登录
 const handleLogout = () => {
   uni.showModal({

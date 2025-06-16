@@ -41,7 +41,7 @@ export const useGoodStore = defineStore(
       uni.setStorageSync('good', good)
     }
 
-    // 删除用户信息
+    // 删除信息
     const removeUserInfo = () => {
       good.value = { ...goodState }
       uni.removeStorageSync('good')
