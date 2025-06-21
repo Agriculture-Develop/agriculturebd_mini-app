@@ -1,8 +1,10 @@
 <template>
-  <view class="goods">
+  <view class="goods p-3">
     <view @click="jumpDetailsPage(product.id)">
       <view class="title flex items-center gap-1">
-        <wd-skeleton theme="avatar" />
+        <wd-skeleton theme="avatar" :loading="false">
+          <wd-img round :src="product.userImg" :width="70" :height="70"></wd-img>
+        </wd-skeleton>
         <view class="title_mes flex items-center flex-col">
           <view class="name text-xl font-bold">{{ product.name }}</view>
           <view class="time text-gray-300 text-sm">{{ product.time }}</view>
@@ -10,14 +12,19 @@
       </view>
       <view class="content space-y-2 py-4">
         <view>{{ product.description }}</view>
-        <view>
+        <view class="flex gap-3">
           <wd-img
             class="goods-img"
-            src="https://img.yzcdn.cn/vant/cat.jpeg"
+            :src="product.image"
             :width="100"
             :height="100"
             mode="aspectFill"
           />
+          <view class="tagContainer flex-1">
+            <wd-tag type="success" round class="m-2">{{ product.amount }}</wd-tag>
+            <wd-tag type="success" round class="m-2">{{ product.tagName }}</wd-tag>
+            <wd-tag type="success" round class="m-2">{{ product.price }}</wd-tag>
+          </view>
         </view>
         <view
           @click.stop
@@ -35,14 +42,9 @@
 </template>
 
 <script lang="ts" setup>
+import type { Itags, Igood } from '@/store/good'
+type Product = Itags & Igood
 const isActive = ref([false, false])
-interface Product {
-  id: number
-  name: string
-  description: string
-  image: string
-  time: string
-}
 
 const props = defineProps<{
   product: Product // 必传

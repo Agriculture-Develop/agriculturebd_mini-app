@@ -78,7 +78,8 @@
       "path": "pages/goods/index",
       "type": "page",
       "style": {
-        "navigationStyle": "custom"
+        "navigationStyle": "custom",
+        "enablePullDownRefresh": true
       }
     },
     {

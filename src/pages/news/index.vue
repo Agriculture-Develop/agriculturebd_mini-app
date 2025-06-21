@@ -19,8 +19,7 @@ interface NewsItem {
   date: string
   content: string
   imageUrl: string
-  category: string
-  views: number
+  // category: string
 }
 
 interface SelectEvent {
@@ -32,13 +31,13 @@ const { safeAreaInsets } = uni.getSystemInfoSync()
 const router = useRouter()
 
 // 修改分类数据结构为 select-picker 需要的格式
-const categoryColumns = [
-  { value: '全部', label: '全部' },
-  { value: '产业动态', label: '产业动态' },
-  { value: '科技创新', label: '科技创新' },
-  { value: '电商发展', label: '电商发展' },
-  { value: '品牌建设', label: '品牌建设' },
-]
+// const categoryColumns = [
+//   { value: '全部', label: '全部' },
+//   { value: '产业动态', label: '产业动态' },
+//   { value: '科技创新', label: '科技创新' },
+//   { value: '电商发展', label: '电商发展' },
+//   { value: '品牌建设', label: '品牌建设' },
+// ]
 
 const newsList = ref<NewsItem[]>([
   {
@@ -48,8 +47,6 @@ const newsList = ref<NewsItem[]>([
     content:
       '茂名市荔枝种植面积达100万亩，今年预计产量将突破50万吨，创历史新高。当地政府积极推动荔枝产业升级，助力农民增收。通过引进新品种、推广新技术，茂名荔枝品质不断提升，市场竞争力显著增强。',
     imageUrl: defaultImage,
-    category: '产业动态',
-    views: 1250,
   },
   {
     id: 2,
@@ -58,8 +55,6 @@ const newsList = ref<NewsItem[]>([
     content:
       '茂名市启动香蕉产业智慧化改造项目，引入物联网技术，实现精准种植和智能管理，提升香蕉品质和产量。项目总投资达5000万元，预计带动周边农户增收30%以上。',
     imageUrl: defaultImage,
-    category: '科技创新',
-    views: 980,
   },
   {
     id: 3,
@@ -68,8 +63,6 @@ const newsList = ref<NewsItem[]>([
     content:
       '茂名市农产品电商平台正式运营，整合全市优质农产品资源，打通线上线下销售渠道，为农民提供便捷的销售平台。平台上线首月交易额突破1000万元，带动5000户农户增收。',
     imageUrl: defaultImage,
-    category: '电商发展',
-    views: 1560,
   },
   {
     id: 4,
@@ -78,8 +71,6 @@ const newsList = ref<NewsItem[]>([
     content:
       '茂名市举办首届农产品品牌节，集中展示荔枝、香蕉、龙眼等特色农产品。活动期间签订产销合作协议20余份，意向金额达2亿元。',
     imageUrl: defaultImage,
-    category: '品牌建设',
-    views: 890,
   },
   {
     id: 5,
@@ -88,8 +79,6 @@ const newsList = ref<NewsItem[]>([
     content:
       '茂名市举办首届农产品品牌节，集中展示荔枝、香蕉、龙眼等特色农产品。活动期间签订产销合作协议20余份，意向金额达2亿元。',
     imageUrl: defaultImage,
-    category: '品牌建设',
-    views: 890,
   },
   {
     id: 6,
@@ -98,8 +87,6 @@ const newsList = ref<NewsItem[]>([
     content:
       '茂名市举办首届农产品品牌节，集中展示荔枝、香蕉、龙眼等特色农产品。活动期间签订产销合作协议20余份，意向金额达2亿元。',
     imageUrl: defaultImage,
-    category: '品牌建设',
-    views: 890,
   },
 ])
 
@@ -110,12 +97,11 @@ const selectedCategory = ref('全部')
 
 const filteredNews = computed(() => {
   return newsList.value.filter((news) => {
-    const matchKeyword =
-      news.title.toLowerCase().includes(searchKeyword.value.toLowerCase()) ||
-      news.content.toLowerCase().includes(searchKeyword.value.toLowerCase())
-    const matchCategory =
-      selectedCategory.value === '全部' || news.category === selectedCategory.value
-    return matchKeyword && matchCategory
+    const matchKeyword = news.title.toLowerCase().includes(searchKeyword.value.toLowerCase())
+    // news.content.toLowerCase().includes(searchKeyword.value.toLowerCase())
+    // const matchCategory =
+    //   selectedCategory.value === '全部' || news.category === selectedCategory.value
+    return matchKeyword
   })
 })
 //跳转回去
@@ -172,13 +158,13 @@ const handleDetialClick = (id: string) => {
     <view class="p-4 bg-white">
       <view class="flex gap-2 mb-4">
         <wd-search v-model="searchKeyword" placeholder="搜索新闻..." class="flex-1" />
-        <wd-select-picker
+        <!-- <wd-select-picker
           v-model="selectedCategory"
           :columns="categoryColumns"
           class="w-32"
           @confirm="handleCategoryChange"
           type="radio"
-        />
+        /> -->
       </view>
     </view>
 
@@ -190,17 +176,14 @@ const handleDetialClick = (id: string) => {
         class="mb-4 bg-white rounded-lg overflow-hidden shadow-sm"
       >
         <view class="p-4" @click="handleDetialClick(news.id.toString())">
-          <view class="flex gap-4">
+          <view class="flex gap-4 items-center">
             <image
               :src="news.imageUrl"
               class="w-24 h-24 rounded-lg object-cover"
               mode="aspectFill"
             />
             <view class="flex-1">
-              <view class="flex items-center gap-2 mb-2">
-                <wd-tag type="success" size="small">{{ news.category }}</wd-tag>
-                <text class="text-gray-500 text-xs">{{ news.views }} 阅读</text>
-              </view>
+              <view class="flex items-center gap-2 mb-2"></view>
               <view class="text-base font-medium mb-1 line-clamp-2">{{ news.title }}</view>
               <view class="text-gray-500 text-xs">{{ news.date }}</view>
               <view class="text-gray-600 text-sm mt-1 line-clamp-2">{{ news.content }}</view>

@@ -24,7 +24,6 @@
         <view class="flex items-center gap-3 text-gray-500 text-sm">
           <text>{{ news.author }}</text>
           <text>{{ news.date }}</text>
-          <text>{{ news.views }} 阅读</text>
         </view>
       </view>
 
@@ -48,47 +47,11 @@
       </view>
 
       <!-- 标签 -->
-      <view class="mb-6 flex flex-wrap gap-2">
+      <!-- <view class="mb-6 flex flex-wrap gap-2">
         <wd-tag v-for="tag in news.tags" :key="tag" type="success" size="small">
           {{ tag }}
         </wd-tag>
-      </view>
-
-      <!-- 互动区域 -->
-      <view class="mb-6 flex items-center gap-4">
-        <wd-button :type="isLiked ? 'primary' : 'default'" size="small" @click="handleLike">
-          <wd-icon :name="isLiked ? 'like-fill' : 'like'" class="mr-1" />
-          {{ isLiked ? '已点赞' : '点赞' }} ({{ news.likes }})
-        </wd-button>
-        <wd-button size="small">
-          <wd-icon name="share" class="mr-1" />
-          分享
-        </wd-button>
-      </view>
-
-      <!-- 评论区 -->
-      <view class="mt-8">
-        <view class="text-lg font-bold mb-4">评论区</view>
-
-        <!-- 评论输入框 -->
-        <view class="mb-6">
-          <wd-textarea v-model="commentText" placeholder="写下你的评论..." :rows="3" />
-          <view class="mt-2 flex justify-end">
-            <wd-button type="primary" size="small" @click="handleComment">发表评论</wd-button>
-          </view>
-        </view>
-
-        <!-- 评论列表 -->
-        <view class="space-y-4">
-          <view v-for="comment in comments" :key="comment.id" class="bg-gray-50 rounded-lg p-4">
-            <view class="flex justify-between items-start mb-2">
-              <text class="font-medium">{{ comment.user }}</text>
-              <text class="text-gray-500 text-xs">{{ comment.time }}</text>
-            </view>
-            <text class="text-gray-700">{{ comment.content }}</text>
-          </view>
-        </view>
-      </view>
+      </view> -->
     </view>
   </view>
 </template>

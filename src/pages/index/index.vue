@@ -8,17 +8,17 @@
 </route>
 <template>
   <view :style="{ marginTop: safeAreaInsets?.top + 'px' }" class="space-y-4">
-    <view class="bg-green-100 h-15 center">农产品小城序</view>
+    <view class="bg-green-100 h-15 center">农产品小程序</view>
     <view class="swiper">
       <wd-swiper :list="swiperList" autoplay v-model:current="current"></wd-swiper>
     </view>
     <view class="tab-container relative">
-      <view class="absolute left-0 top-2 z-1">新闻动态</view>
+      <view class="absolute left-0 top-2 z-1 text-green text-2xl">新闻动态</view>
       <wd-tabs v-model="tab" custom-class="tabs" color="green">
-        <block v-for="item in 4" :key="item">
+        <block v-for="item in 2" :key="item">
           <wd-tab :title="`标签${item}`">
             <view class="content h-50 bg-green-50 flex flex-col items-center justify-around">
-              <view v-for="int in 4">
+              <view v-for="item in 4">
                 <view @click="jumpDetailsPage">title仅此是最大的吐蕃</view>
               </view>
             </view>
@@ -26,43 +26,22 @@
         </block>
       </wd-tabs>
     </view>
-    <view v-for="(item, index) in goodsList">
-      <Goods :product="goodsList[index]" />
+    <goodContainer :show-all="false" />
+    <view flex justify-center>
+      <wd-button @click="jumpGoodsPage">查看全部</wd-button>
     </view>
   </view>
 </template>
 
 <script lang="ts" setup>
-import Goods from '../goods/components/goods/index.vue'
+import goodContainer from '../goods/components/goods/goodContainer.vue'
 const current = ref<number>(0)
 
 const swiperList = ref([
   'https://registry.npmmirror.com/wot-design-uni-assets/*/files/redpanda.jpg',
   'https://registry.npmmirror.com/wot-design-uni-assets/*/files/panda.jpg',
 ])
-const goodsList = ref([
-  {
-    id: 1,
-    name: '美瞳',
-    description: '用户的描述的美瞳',
-    image: 'https://img.yzcdn.cn/vant/cat.jpeg',
-    time: '2min前',
-  },
-  {
-    id: 2,
-    name: '手机壳',
-    description: '用户的描述的手机壳',
-    image: 'https://img.yzcdn.cn/vant/cat.jpeg',
-    time: '5min前',
-  },
-  {
-    id: 3,
-    name: '耳机',
-    description: '用户的描述的耳机',
-    image: 'https://img.yzcdn.cn/vant/cat.jpeg',
-    time: '10min前',
-  },
-])
+
 const tab = ref<number>(0)
 defineOptions({
   name: 'Home',
@@ -73,6 +52,9 @@ const { safeAreaInsets } = uni.getSystemInfoSync()
 //跳转对应的页面
 const jumpDetailsPage = (id) => {
   uni.navigateTo({ url: `/pages/news/index` })
+}
+const jumpGoodsPage = () => {
+  uni.switchTab({ url: '/pages/goods/index' })
 }
 </script>
 
