@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import lingmeng from '/src/static/images/lingmeng.jpg'
 import userImg from '@/static/images/avatar.jpg'
+import { getPetId } from '@/service/app'
 // 初始化状态
 export type Igood = {
   id: number
@@ -40,6 +41,9 @@ export const useGoodStore = defineStore(
       tags.value = { ...val }
     }
     const getTags = () => {
+      // const { loading, error, data, run } = useRequest(() => getPetId({ params: { petId: '1' } }))
+      // run()
+      // return data
       return [
         {
           price: '¥12.8/斤',

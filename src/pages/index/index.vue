@@ -8,18 +8,26 @@
 </route>
 <template>
   <view :style="{ marginTop: safeAreaInsets?.top + 'px' }" class="space-y-4">
-    <view class="bg-green-100 h-15 center">农产品小程序</view>
+    <view
+      class="h-35 flex items-center justify-start font-bold gap-x-5 bg-[url('../../static/images/background.png')] bg-cover bg-no-repeat bg-center"
+    >
+      <image
+        class="w-15 h-15 rounded-full m-l-3 m-t-(-10)"
+        src="../../static/images/logo.png"
+      ></image>
+      <view class="text-(2xl green-700) m-t-(-20)">农产品小程序</view>
+    </view>
     <view class="swiper">
       <wd-swiper :list="swiperList" autoplay v-model:current="current"></wd-swiper>
     </view>
     <view class="tab-container relative">
       <view class="absolute left-0 top-2 z-1 text-green text-2xl">新闻动态</view>
       <wd-tabs v-model="tab" custom-class="tabs" color="green">
-        <block v-for="item in 2" :key="item">
-          <wd-tab :title="`标签${item}`">
+        <block v-for="(item, index) in tabs" :key="item.name">
+          <wd-tab :title="`${item.name}`">
             <view class="content h-50 bg-green-50 flex flex-col items-center justify-around">
-              <view v-for="item in 4">
-                <view @click="jumpDetailsPage">title仅此是最大的吐蕃</view>
+              <view v-for="item in tabs[0].title">
+                <view @click="jumpDetailsPage">{{ item }}</view>
               </view>
             </view>
           </wd-tab>
@@ -35,13 +43,17 @@
 
 <script lang="ts" setup>
 import goodContainer from '../goods/components/goods/goodContainer.vue'
+import { getAdminNewsCategoriesList } from '@/service/app'
+
 const current = ref<number>(0)
 
 const swiperList = ref([
-  'https://registry.npmmirror.com/wot-design-uni-assets/*/files/redpanda.jpg',
+  'https://registry.npmmirror.com/wot-design-uni-assets/*/files/panda.jpg',
   'https://registry.npmmirror.com/wot-design-uni-assets/*/files/panda.jpg',
 ])
-
+const { loading, error, data, run } = useRequest(() => getAdminNewsCategoriesList({}), {
+  immediate: true,
+})
 const tab = ref<number>(0)
 defineOptions({
   name: 'Home',
@@ -56,6 +68,29 @@ const jumpDetailsPage = (id) => {
 const jumpGoodsPage = () => {
   uni.switchTab({ url: '/pages/goods/index' })
 }
+type Itabs = {
+  name: String
+  title?: String
+}
+const tabs = ref<Itabs[]>([{ name: '新闻' }, { name: '政策' }])
+const titleList = ref<string[]>([])
+
+// 监听 data 变化
+watch(
+  () => data.value?.list,
+  (newList) => {
+    if (!newList) return
+    // 清空并重新填充 titleList
+    titleList.value = newList.map((item) => item.name)
+
+    // 更新 tabs
+    tabs.value = tabs.value.map((item, index) => ({
+      ...item,
+      title: titleList.value?.slice(0, 5), // 每个 tab 显示 3 个标题
+    }))
+  },
+  { immediate: true },
+)
 </script>
 
 <style lang="scss" scoped>
@@ -66,7 +101,6 @@ const jumpGoodsPage = () => {
     right: 0;
     width: 60%;
     .wd-tabs__nav-item {
-      // background-color: red;
     }
   }
 }

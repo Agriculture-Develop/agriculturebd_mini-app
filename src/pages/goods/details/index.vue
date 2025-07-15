@@ -18,8 +18,7 @@
       <view class="bottom flex px-2 items-center">
         <view class="flex-1">20min</view>
         <view class="flex gap-x-3 items-center">
-          <view>up</view>
-          <view>like</view>
+          <view><i class="text-gray-300 i-uiw-heart-on"></i></view>
         </view>
       </view>
       <wd-divider></wd-divider>
@@ -43,11 +42,13 @@
           <view>
             <view class="name text-sm">微信用户</view>
             <view class="flex items-center gap-x-2">
-              <view class="comment max-w-50vw">撒谎大客户卡死货到付款问哈开发我喝的2222</view>
-              <view class="time self-start">11min</view>
+              <view class="comment max-w-50vw text-sm">
+                撒谎大客户卡死货到付款问哈开发我喝的2222
+              </view>
+              <view class="time self-start text-xs text-gray-400">11min前</view>
             </view>
           </view>
-          <view class="like">like</view>
+          <view><i class="text-gray-300 i-uiw-heart-on"></i></view>
         </view>
       </view>
     </view>
@@ -62,7 +63,7 @@ const swiperList = ref([
   'https://registry.npmmirror.com/wot-design-uni-assets/*/files/redpanda.jpg',
   'https://registry.npmmirror.com/wot-design-uni-assets/*/files/capybara.jpg',
 ])
-const inputValue = ref('111111111111')
+const inputValue = ref('')
 </script>
 
 <style lang="scss" scoped>
