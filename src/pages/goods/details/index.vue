@@ -9,11 +9,11 @@
 
 <template>
   <view class="space-y-4">
-    <wd-swiper :list="swiperList" autoplay v-model:current="current" class="p-5" />
+    <wd-swiper :list="swiperList" v-model:current="current" class="p-5" />
     <view class="content w-95vw m-a space-y-4">
-      <view class="title font-bold">不熬问题哦</view>
+      <view class="title font-bold">标题</view>
       <view class="section leading-loose">
-        设施很长的文字自知则知之自知则知之咋咋问哦回复技术开发黑科技咋
+        段落段落 段落段落 段落段落 段落段落 段落段落 段落段落
       </view>
       <view class="bottom flex px-2 items-center">
         <view class="flex-1">20min</view>
@@ -42,9 +42,7 @@
           <view>
             <view class="name text-sm">微信用户</view>
             <view class="flex items-center gap-x-2">
-              <view class="comment max-w-50vw text-sm">
-                撒谎大客户卡死货到付款问哈开发我喝的2222
-              </view>
+              <view class="comment w-50vw min-w-20vw text-sm">用户的评论</view>
               <view class="time self-start text-xs text-gray-400">11min前</view>
             </view>
           </view>
@@ -59,10 +57,7 @@
 <script lang="ts" setup>
 const current = ref<number>(0)
 
-const swiperList = ref([
-  'https://registry.npmmirror.com/wot-design-uni-assets/*/files/redpanda.jpg',
-  'https://registry.npmmirror.com/wot-design-uni-assets/*/files/capybara.jpg',
-])
+const swiperList = ref(['/static/images/lingmeng.jpg', '/static/images/lingmeng.jpg'])
 const inputValue = ref('')
 </script>
 

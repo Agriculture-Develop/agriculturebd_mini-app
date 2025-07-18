@@ -8,7 +8,7 @@
 
 <template>
   <view class="profile-container">
-    {{ JSON.stringify(userStore.userInfo) }}
+    <!-- {{ JSON.stringify(userStore.userInfo) }} -->
     <!-- 用户信息区域 -->
     <view class="user-info-section">
       <!-- #ifdef MP-WEIXIN -->
@@ -17,7 +17,7 @@
       </button>
       <!-- #endif -->
       <!-- #ifndef MP-WEIXIN -->
-      <view class="avatar-wrapper" @click="run">
+      <view class="avatar-wrapper bg-red" @click="run">
         <wd-img :src="userStore.userInfo.avatar" width="100%" height="100%" radius="50%"></wd-img>
       </view>
       <!-- #endif -->
@@ -26,7 +26,7 @@
         <input
           type="nickname"
           class="weui-input"
-          placeholder="请输入昵称111"
+          placeholder="请输入昵称"
           v-model="userStore.userInfo.username"
         />
         <!-- #endif -->
@@ -52,6 +52,13 @@
           </template>
         </wd-cell>
       </view>
+      <!-- 预览图片 -->
+      <image
+        v-if="previewImage"
+        :src="previewImage"
+        mode="aspectFit"
+        style="width: 300px; height: 300px; border: 1px dashed #eee"
+      />
 
       <view class="logout-button-wrapper">
         <wd-button type="error" v-if="hasLogin" block @click="handleLogout">退出登录</wd-button>
@@ -79,6 +86,25 @@ onShow((options) => {
 
   hasLogin.value && useUserStore().getUserInfo()
 })
+//预览图片
+const previewImage = ref('')
+
+const selectImage = () => {
+  uni.chooseImage({
+    count: 1, // 默认只选1张
+    sizeType: ['original', 'compressed'], // 可以指定选择原图或压缩图
+    sourceType: ['album', 'camera'], // 从相册或相机选择
+    success: (res) => {
+      // 获取临时路径并预览
+      previewImage.value = res.tempFilePaths[0]
+      console.log('本地临时路径:', res.tempFilePaths[0])
+    },
+    fail: (err) => {
+      console.error('选择失败:', err)
+      uni.showToast({ title: '选择图片失败', icon: 'none' })
+    },
+  })
+}
 // #ifndef MP-WEIXIN
 // 上传头像
 const { run } = useUpload<IUploadSuccessInfo>(

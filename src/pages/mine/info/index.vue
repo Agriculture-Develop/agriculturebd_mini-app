@@ -7,6 +7,8 @@
 </route>
 
 <template>
+  {{ JSON.stringify(userStore.userInfo) }}
+  {{ formData }}
   <view class="profile-info-container">
     <view class="profile-card">
       <view class="form-wrapper">
@@ -17,10 +19,10 @@
               <text class="field-label">昵称</text>
               <wd-input
                 prop="name"
+                type="nickname"
                 clearable
-                v-model="formData.name"
+                v-model="formData.username"
                 placeholder="请输入昵称"
-                :rules="[{ required: true, message: '请填写昵称' }]"
                 class="form-input"
               />
             </view>
@@ -29,7 +31,7 @@
             <view class="sex-field">
               <text class="field-label">角色</text>
               <wd-radio-group
-                v-model="formData.sex"
+                v-model="formData.role"
                 shape="button"
                 :rules="[{ required: true, message: '请选择角色' }]"
               >
@@ -37,8 +39,18 @@
                 <wd-radio :value="'0'">供应商</wd-radio>
               </wd-radio-group>
             </view>
-            <view>
+            <!-- 更换头像 -->
+            <view class="sex-field">
               <text class="field-label">更换头像</text>
+              <wd-cell class="flex-1 justify-end">
+                <button
+                  class="size-10 !p-0 rounded-full"
+                  open-type="chooseAvatar"
+                  @chooseavatar="onChooseAvatar"
+                >
+                  <wd-img :src="formData.avatar" width="40px" height="40px" radius="50%"></wd-img>
+                </button>
+              </wd-cell>
             </view>
           </wd-cell-group>
         </wd-form>
@@ -54,10 +66,13 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useUserStore } from '@/store'
-import { storeToRefs } from 'pinia'
 import { toast } from '@/utils/toast'
 import { updateInfo } from '@/api/login'
+import { useUserStore } from '@/store'
+import { useToast } from 'wot-design-uni'
+import { uploadFileUrl, useUpload } from '@/utils/uploadFile'
+import { storeToRefs } from 'pinia'
+import { IUploadSuccessInfo } from '@/api/login.typings'
 
 // 表单引用
 const formRef = ref()
@@ -68,9 +83,10 @@ const { userInfo } = storeToRefs(userStore)
 
 // 表单数据
 const formData = ref({
+  username: userInfo.value.username,
+  avatar: userInfo.value.avatar,
   id: userInfo.value.id,
-  name: userInfo.value.name,
-  sex: userInfo.value.sex,
+  role: userInfo.value.role,
 })
 
 // 提交表单
@@ -78,10 +94,70 @@ const handleSubmit = async () => {
   // 表单验证
   const valid = await formRef.value.validate()
   if (!valid) return
-  const { message } = await updateInfo(formData.value)
-  await useUserStore().getUserInfo()
-  toast.success(message)
+  const avatar = formData.value.avatar
+  const { run: uploadAvatar } = useUpload<IUploadSuccessInfo>(
+    uploadFileUrl.USER_AVATAR,
+    {},
+    {
+      onSuccess: (res) => useUserStore().getUserInfo,
+    },
+    avatar,
+  )
+  uploadAvatar()
+  console.log('提交表单', formData.value)
+
+  const { msg } = await updateInfo(formData.value)
+  userStore.getUserInfo()
+  toast.success(msg)
+  console.log(userStore.userInfo)
 }
+
+// #ifndef MP-WEIXIN
+// 上传头像
+// const { run:uploadAvatar } = useUpload<IUploadSuccessInfo>(
+//   uploadFileUrl.USER_AVATAR,
+//   {},
+//   {
+//     onSuccess: (res) => useUserStore().getUserInfo(),
+//   },
+// )
+// #endif
+
+// 微信小程序下登录
+const handleLogin = async () => {
+  // #ifdef MP-WEIXIN
+
+  // 微信登录
+  await userStore.wxLogin()
+  hasLogin.value = true
+  // #endif
+  // #ifndef MP-WEIXIN
+  uni.navigateTo({ url: '/pages/login/index' })
+  // #endif
+}
+
+// 微信小程序下选择头像事件
+const onChooseAvatar = (e: any) => {
+  console.log('选择头像', e.detail)
+  const { avatarUrl } = e.detail
+  formData.value.avatar = avatarUrl // 更新表单数据中的头像
+  const { run: uploadAvatar } = useUpload<IUploadSuccessInfo>(
+    uploadFileUrl.USER_AVATAR,
+    {},
+    {
+      onSuccess: (res) => useUserStore().getUserInfo,
+    },
+    avatarUrl,
+  )
+  console.log('头像上传成功', avatarUrl, formData.value.avatar)
+}
+
+// #ifdef MP-WEIXIN
+// 微信小程序下设置用户名
+const getUserInfo = (e: any) => {
+  console.log(e.detail)
+}
+// #endif
 </script>
 
 <style lang="scss" scoped>
@@ -189,5 +265,12 @@ const handleSubmit = async () => {
     transform: translateY(2rpx);
     box-shadow: 0 4rpx 8rpx rgba(74, 123, 255, 0.15);
   }
+}
+
+/* 基础样式 */
+.profile-container {
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  background-color: #f7f8fa;
 }
 </style>

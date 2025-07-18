@@ -54,7 +54,7 @@
           </wd-button>
         </view>
       </wd-form>
-      {{ model }}
+      <!-- {{ model }} -->
     </view>
     <wd-upload
       v-model:file-list="fileList"
@@ -66,7 +66,7 @@
   <wd-button @click="uploadMessage(msg)">click</wd-button>
   <wd-button @click="lod()">load</wd-button>
 
-  {{ fileList }}
+  <!-- {{ fileList }} -->
 </template>
 
 <script lang="ts" setup>
@@ -78,8 +78,8 @@ import { Igood, Itags } from '@/store'
 const goodStore = useGoodStore()
 const messageBox = useMessage()
 const toast = useToast()
-const value = ref<string>('这是一个测试的textarea组件')
-const titleValue = ref<string>('这是一个测试的title组件')
+const value = ref<string>('输入段落信息输入段落信息输入段落信息输入段落信息输入段落信息')
+const titleValue = ref<string>('输入标题')
 
 const fileList = ref<any[]>([
   {

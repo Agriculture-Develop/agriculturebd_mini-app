@@ -9,17 +9,18 @@
 <template>
   <view :style="{ marginTop: safeAreaInsets?.top + 'px' }" class="space-y-4">
     <view
-      class="h-35 flex items-center justify-start font-bold gap-x-5 bg-[url('../../static/images/background.png')] bg-cover bg-no-repeat bg-center"
+      class="h-35 flex items-center justify-start font-bold gap-x-5 bg-cover bg-no-repeat bg-center"
+      :style="{ backgroundImage: 'url(/static/images/background.png)' }"
     >
       <image
         class="w-15 h-15 rounded-full m-l-3 m-t-(-10)"
         src="../../static/images/logo.png"
       ></image>
-      <view class="text-(2xl green-700) m-t-(-20)">农产品小程序</view>
+      <view class="text-(2xl green-700) m-t-(-15)">农产品小程序</view>
     </view>
-    <view class="swiper">
+    <!-- <view class="swiper mt-(-3)">
       <wd-swiper :list="swiperList" autoplay v-model:current="current"></wd-swiper>
-    </view>
+    </view> -->
     <view class="tab-container relative">
       <view class="absolute left-0 top-2 z-1 text-green text-2xl">新闻动态</view>
       <wd-tabs v-model="tab" custom-class="tabs" color="green">
@@ -44,13 +45,12 @@
 <script lang="ts" setup>
 import goodContainer from '../goods/components/goods/goodContainer.vue'
 import { getAdminNewsCategoriesList } from '@/service/app'
+// 将图片转为base64
+backgroundImage: '../../static/images/background.png;base64,...'
 
 const current = ref<number>(0)
 
-const swiperList = ref([
-  'https://registry.npmmirror.com/wot-design-uni-assets/*/files/panda.jpg',
-  'https://registry.npmmirror.com/wot-design-uni-assets/*/files/panda.jpg',
-])
+const swiperList = ref(['/static/images/lingmeng.jpg', '/static/images/lingmeng.jpg'])
 const { loading, error, data, run } = useRequest(() => getAdminNewsCategoriesList({}), {
   immediate: true,
 })

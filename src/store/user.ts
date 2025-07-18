@@ -12,10 +12,11 @@ import { IUserInfoVo } from '@/api/login.typings'
 
 // 初始化状态
 const userInfoState: IUserInfoVo = {
-  id: 0,
-  username: '',
+  id: '0',
+  username: '111',
   avatar: '/static/images/default-avatar.png',
   token: '',
+  role: '农户',
 }
 
 export const useUserStore = defineStore(

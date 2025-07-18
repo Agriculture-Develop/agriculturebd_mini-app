@@ -10,7 +10,7 @@
           <view class="time text-gray-300 text-sm">{{ product.time }}</view>
         </view>
         <view class="name text-xl font-bold">
-          <wd-tag round type="success" class="m-l-3">企业</wd-tag>
+          <wd-tag round type="success" class="m-l-3">农户</wd-tag>
         </view>
       </view>
       <view class="content space-y-2 py-4">

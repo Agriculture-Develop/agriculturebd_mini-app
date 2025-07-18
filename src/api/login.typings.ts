@@ -2,10 +2,11 @@
  * 用户信息
  */
 export type IUserInfoVo = {
-  id: number
+  id?: string
   username: string
   avatar: string
-  token: string
+  token?: string
+  role: string
 }
 
 /**
@@ -41,11 +42,7 @@ export type IUploadSuccessInfo = {
 /**
  * 更新用户信息
  */
-export type IUpdateInfo = {
-  id: number
-  name: string
-  sex: string
-}
+export type IUpdateInfo = IUserInfoVo
 /**
  * 更新用户信息
  */
