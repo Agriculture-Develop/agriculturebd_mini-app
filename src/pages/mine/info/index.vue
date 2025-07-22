@@ -15,7 +15,7 @@
         <wd-form ref="formRef" :model="formData" label-width="160rpx" class="profile-form">
           <wd-cell-group class="form-group">
             <!-- 昵称 -->
-            <view class="sex-field">
+            <view class="row-field">
               <text class="field-label">昵称</text>
               <wd-input
                 prop="name"
@@ -28,7 +28,7 @@
             </view>
 
             <!-- 角色-->
-            <view class="sex-field">
+            <view class="row-field">
               <text class="field-label">角色</text>
               <wd-radio-group
                 v-model="formData.role"
@@ -40,7 +40,7 @@
               </wd-radio-group>
             </view>
             <!-- 更换头像 -->
-            <view class="sex-field">
+            <view class="row-field">
               <text class="field-label">更换头像</text>
               <wd-cell class="flex-1 justify-end">
                 <button
@@ -48,7 +48,12 @@
                   open-type="chooseAvatar"
                   @chooseavatar="onChooseAvatar"
                 >
-                  <wd-img :src="formData.avatar" width="40px" height="40px" radius="50%"></wd-img>
+                  <wd-img
+                    :src="formData.avatar || '/static/images/default-avatar.png'"
+                    width="40px"
+                    height="40px"
+                    radius="50%"
+                  ></wd-img>
                 </button>
               </wd-cell>
             </view>
@@ -56,8 +61,10 @@
         </wd-form>
 
         <!-- 操作按钮 -->
-        <view class="form-actions">
-          <wd-button type="primary" size="large" @click="handleSubmit">保存修改</wd-button>
+        <view class="form-actions flex justify-center">
+          <wd-button type="primary" size="large" custom-class="submit-btn" @click="handleSubmit">
+            保存修改
+          </wd-button>
         </view>
       </view>
     </view>
@@ -213,7 +220,7 @@ const getUserInfo = (e: any) => {
   font-size: 30rpx;
 }
 
-.sex-field {
+.row-field {
   display: flex;
   align-items: center;
   padding: 24rpx 30rpx;

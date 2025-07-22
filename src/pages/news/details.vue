@@ -19,11 +19,10 @@
       <!-- 文章头部 -->
       <view class="mb-6">
         <view class="text-xl font-bold mb-3">{{ data.title }}</view>
-        <view class="flex items-center gap-3 text-gray-500 text-sm">
-          <text>{{ data.author }}</text>
-          <text>{{ data.source }}</text>
-
-          <text>{{ data.created_at }}</text>
+        <view class="flex items-center justify-start gap-3 text-gray-500 text-sm">
+          <text class="whitespace-nowrap">{{ data.author }}</text>
+          <text class="whitespace-nowrap">{{ data.source }}</text>
+          <text class="whitespace-nowrap">{{ data.created_at }}</text>
         </view>
       </view>
 

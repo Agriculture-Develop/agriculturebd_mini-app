@@ -8,8 +8,8 @@
 </route>
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { getAdminNewsList } from '@/service/app'
+import { getAdminNewsListQueryOptions } from '@/service/app'
+import { useQuery } from '@tanstack/vue-query'
 
 // 使用相对路径导入图片
 const defaultImage = '/static/images/lingmeng.jpg'
@@ -20,16 +20,13 @@ interface SelectEvent {
 }
 
 const { safeAreaInsets } = uni.getSystemInfoSync()
-const router = useRouter()
-const {
-  loading,
-  error,
-  data: newsList,
-  run,
-} = useRequest(() => getAdminNewsList({}), {
-  immediate: true,
-})
-
+// const { loading, error, data, run } = useRequest(
+//   () => getAdminNewsList({ params: { author: 'admin' } }),
+//   {
+//     immediate: true,
+//   },
+// )
+const { data: newsList } = useQuery(getAdminNewsListQueryOptions({ params: { author: 'admin' } }))
 // 修改分类数据结构为 select-picker 需要的格式
 const categoryColumns = [
   { value: '全部', label: '全部' },
@@ -40,12 +37,12 @@ const categoryColumns = [
 ]
 
 const currentPage = ref(1)
-const pageSize = ref(5)
+const pageSize = ref(6)
 const searchKeyword = ref('')
 const selectedCategory = ref('全部')
 
 const filteredNews = computed(() => {
-  return newsList.value?.list?.filter((news) => {
+  return newsList.value?.data?.list.filter((news) => {
     const matchKeyword = news.title.toLowerCase().includes(searchKeyword.value.toLowerCase())
     news.content.toLowerCase().includes(searchKeyword.value.toLowerCase())
     const matchCategory =
@@ -88,7 +85,7 @@ const handleCategoryChange = (event: SelectEvent) => {
   })
 }
 
-const handleDetialClick = (id: string) => {
+const handleDetailsClick = (id: string) => {
   uni.navigateTo({
     url: `/pages/news/details?id=${id}`,
   })
@@ -101,8 +98,8 @@ const handleDetialClick = (id: string) => {
       <template #title>茂名农产品新闻</template>
     </wd-navbar>
     <!-- 搜索和筛选区域 -->
-    <view class="p-4 bg-white">
-      <view class="flex gap-2 mb-4">
+    <view class="p-2 bg-white">
+      <view class="flex gap-2">
         <wd-search v-model="searchKeyword" placeholder="搜索新闻..." class="flex-1" />
         <wd-select-picker
           v-model="selectedCategory"
@@ -119,28 +116,33 @@ const handleDetialClick = (id: string) => {
       <view
         v-for="news in paginatedNews"
         :key="news.id"
-        class="mb-4 bg-white rounded-lg overflow-hidden shadow-sm"
+        class="mb-2 bg-white rounded-lg overflow-hidden shadow-sm"
       >
-        <view class="p-4" @click="handleDetialClick(news.id.toString())">
-          <view class="flex gap-4 items-center relative">
+        <view class="" @click="handleDetailsClick(news.id.toString())">
+          <view class="flex gap-1 items-center">
             <image
               :src="news.cover_url"
-              class="w-24 h-24 rounded-lg object-cover"
+              class="w-24 h-24 rounded-lg object-cover flex-shrink-0"
               mode="aspectFill"
             />
-            <view class="flex-1">
-              <view class="text-base font-medium mb-1 line-clamp-2">{{ news.title }}</view>
-              <view class="text-gray-500 text-xs">{{ news.created_at }}</view>
-              <view class="absolute right-0 top-6">
-                <wd-tag
-                  type="primary"
-                  custom-class="!w-15 !h-6 !text-3 !flex !items-center !justify-center !rounded-2 "
-                >
+            <view class="flex-1 text-ellipsis whitespace-nowrap overflow-hidden">
+              <view
+                class="text-base font-medium mb-1 text-ellipsis whitespace-nowrap overflow-hidden w-full"
+              >
+                {{ news.title }}
+              </view>
+              <view class="text-gray-500 w-full text-xs flex gap-3">
+                {{ news.created_at }}
+                <wd-tag type="primary" plain custom-class=" overflow-hidden">
                   {{ news.category }}
                 </wd-tag>
               </view>
 
-              <view class="text-gray-600 text-sm mt-1 line-clamp-2">{{ news.content }}</view>
+              <view
+                class="text-gray-600 text-sm mt-1 text-ellipsis line-clamp-3 overflow-hidden w-50"
+              >
+                {{ news.content }}
+              </view>
             </view>
           </view>
         </view>
@@ -148,7 +150,7 @@ const handleDetialClick = (id: string) => {
     </view>
 
     <!-- 分页 -->
-    <view class="p-4 flex justify-center">
+    <view class="p-2 flex justify-center">
       <wd-pagination
         v-model="currentPage"
         :total="filteredNews?.length"

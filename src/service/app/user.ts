@@ -67,13 +67,106 @@ export async function getAdminUserList({
         phone: string;
         nickname: string;
         avatar_path: string;
-        role: number;
-        status: number;
+        role: string;
+        status: string;
         created_at: string;
       }[];
     };
   }>('/admin/user/list', {
     method: 'GET',
+    ...(options || {}),
+  });
+}
+
+/** 获取用户信息 GET /public/user */
+export async function getPublicUser({
+  options,
+}: {
+  options?: CustomRequestOptions;
+}) {
+  return request<{
+    code: number;
+    msg: string;
+    data: {
+      id: number;
+      phone: string;
+      nickname: string;
+      avatar_path: string;
+      role: string;
+      status: string;
+      created_at: string;
+    };
+  }>('/public/user', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+/** 修改用户信息 PUT /public/user */
+export async function putPublicUser({
+  body,
+  options,
+}: {
+  body: {
+    nickname: string;
+    /** 无法修改为管理员以上权限 */
+    role: string;
+  };
+  options?: CustomRequestOptions;
+}) {
+  return request<{ code: number; msg: string }>('/public/user', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/** 上传头像 POST /public/user/avatar */
+export async function postPublicUserAvatar({
+  body,
+  avatar,
+  options,
+}: {
+  body: {};
+  avatar?: File;
+  options?: CustomRequestOptions;
+}) {
+  const formData = new FormData();
+
+  if (avatar) {
+    formData.append('avatar', avatar);
+  }
+
+  Object.keys(body).forEach((ele) => {
+    const item = (body as { [key: string]: any })[ele];
+
+    if (item !== undefined && item !== null) {
+      if (typeof item === 'object' && !(item instanceof File)) {
+        if (item instanceof Array) {
+          item.forEach((f) => formData.append(ele, f || ''));
+        } else {
+          formData.append(ele, JSON.stringify(item));
+        }
+      } else {
+        formData.append(ele, item);
+      }
+    }
+  });
+
+  return request<{
+    code: number;
+    msg: string;
+    data: Record<string, unknown>;
+    avatar: string;
+  }>('/public/user/avatar', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    data: formData,
     ...(options || {}),
   });
 }

@@ -10,7 +10,9 @@ export async function postAuthCode({
   body,
   options,
 }: {
-  body: {};
+  body: {
+    phone: string;
+  };
   options?: CustomRequestOptions;
 }) {
   return request<Record<string, unknown>>('/auth/code', {
@@ -28,10 +30,13 @@ export async function postAuthLoginCode({
   body,
   options,
 }: {
-  body: {};
+  body: {
+    phone: string;
+    auth_code: string;
+  };
   options?: CustomRequestOptions;
 }) {
-  return request<Record<string, unknown>>('/auth/login/code', {
+  return request<{ code: number; msg: string }>('/auth/login/code', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -46,10 +51,17 @@ export async function postAuthLoginPwd({
   body,
   options,
 }: {
-  body: {};
+  body: {
+    phone: string;
+    password: string;
+  };
   options?: CustomRequestOptions;
 }) {
-  return request<Record<string, unknown>>('/auth/login/pwd', {
+  return request<{
+    code: number;
+    msg: string;
+    data: { id: number; token: string };
+  }>('/auth/login/pwd', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -64,10 +76,14 @@ export async function putAuthPassword({
   body,
   options,
 }: {
-  body: {};
+  body: {
+    phone: string;
+    auth_code: string;
+    password: string;
+  };
   options?: CustomRequestOptions;
 }) {
-  return request<Record<string, unknown>>('/auth/password', {
+  return request<{ code: number; msg: string }>('/auth/password', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -82,10 +98,14 @@ export async function postAuthRegister({
   body,
   options,
 }: {
-  body: {};
+  body: {
+    phone: string;
+    password: string;
+    auth_code: string;
+  };
   options?: CustomRequestOptions;
 }) {
-  return request<Record<string, unknown>>('/auth/register', {
+  return request<{ code: number; msg: string }>('/auth/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

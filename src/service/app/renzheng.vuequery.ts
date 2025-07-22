@@ -30,14 +30,14 @@ export function usePostAuthCodeMutation(options?: {
 
 /** 验证码登录 POST /auth/login/code */
 export function usePostAuthLoginCodeMutation(options?: {
-  onSuccess?: (value?: Record<string, unknown>) => void;
+  onSuccess?: (value?: { code: number; msg: string }) => void;
   onError?: (error?: DefaultError) => void;
 }) {
   const { onSuccess, onError } = options || {};
 
   const response = useMutation({
     mutationFn: apis.postAuthLoginCode,
-    onSuccess(data: Record<string, unknown>) {
+    onSuccess(data: { code: number; msg: string }) {
       onSuccess?.(data);
     },
     onError(error) {
@@ -50,14 +50,22 @@ export function usePostAuthLoginCodeMutation(options?: {
 
 /** 密码登录 POST /auth/login/pwd */
 export function usePostAuthLoginPwdMutation(options?: {
-  onSuccess?: (value?: Record<string, unknown>) => void;
+  onSuccess?: (value?: {
+    code: number;
+    msg: string;
+    data: { id: number; token: string };
+  }) => void;
   onError?: (error?: DefaultError) => void;
 }) {
   const { onSuccess, onError } = options || {};
 
   const response = useMutation({
     mutationFn: apis.postAuthLoginPwd,
-    onSuccess(data: Record<string, unknown>) {
+    onSuccess(data: {
+      code: number;
+      msg: string;
+      data: { id: number; token: string };
+    }) {
       onSuccess?.(data);
     },
     onError(error) {
@@ -70,14 +78,14 @@ export function usePostAuthLoginPwdMutation(options?: {
 
 /** 修改密码 PUT /auth/password */
 export function usePutAuthPasswordMutation(options?: {
-  onSuccess?: (value?: Record<string, unknown>) => void;
+  onSuccess?: (value?: { code: number; msg: string }) => void;
   onError?: (error?: DefaultError) => void;
 }) {
   const { onSuccess, onError } = options || {};
 
   const response = useMutation({
     mutationFn: apis.putAuthPassword,
-    onSuccess(data: Record<string, unknown>) {
+    onSuccess(data: { code: number; msg: string }) {
       onSuccess?.(data);
     },
     onError(error) {
@@ -90,14 +98,14 @@ export function usePutAuthPasswordMutation(options?: {
 
 /** 注册账号 POST /auth/register */
 export function usePostAuthRegisterMutation(options?: {
-  onSuccess?: (value?: Record<string, unknown>) => void;
+  onSuccess?: (value?: { code: number; msg: string }) => void;
   onError?: (error?: DefaultError) => void;
 }) {
   const { onSuccess, onError } = options || {};
 
   const response = useMutation({
     mutationFn: apis.postAuthRegister,
-    onSuccess(data: Record<string, unknown>) {
+    onSuccess(data: { code: number; msg: string }) {
       onSuccess?.(data);
     },
     onError(error) {

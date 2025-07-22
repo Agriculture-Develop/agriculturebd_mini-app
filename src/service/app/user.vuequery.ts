@@ -59,3 +59,65 @@ export function getAdminUserListQueryOptions(options: {
     queryKey: ['getAdminUserList', options],
   });
 }
+
+/** 获取用户信息 GET /public/user */
+export function getPublicUserQueryOptions(options: {
+  options?: CustomRequestOptions;
+}) {
+  return queryOptions({
+    queryFn: async ({ queryKey }) => {
+      return apis.getPublicUser(queryKey[1] as typeof options);
+    },
+    queryKey: ['getPublicUser', options],
+  });
+}
+
+/** 修改用户信息 PUT /public/user */
+export function usePutPublicUserMutation(options?: {
+  onSuccess?: (value?: { code: number; msg: string }) => void;
+  onError?: (error?: DefaultError) => void;
+}) {
+  const { onSuccess, onError } = options || {};
+
+  const response = useMutation({
+    mutationFn: apis.putPublicUser,
+    onSuccess(data: { code: number; msg: string }) {
+      onSuccess?.(data);
+    },
+    onError(error) {
+      onError?.(error);
+    },
+  });
+
+  return response;
+}
+
+/** 上传头像 POST /public/user/avatar */
+export function usePostPublicUserAvatarMutation(options?: {
+  onSuccess?: (value?: {
+    code: number;
+    msg: string;
+    data: Record<string, unknown>;
+    avatar: string;
+  }) => void;
+  onError?: (error?: DefaultError) => void;
+}) {
+  const { onSuccess, onError } = options || {};
+
+  const response = useMutation({
+    mutationFn: apis.postPublicUserAvatar,
+    onSuccess(data: {
+      code: number;
+      msg: string;
+      data: Record<string, unknown>;
+      avatar: string;
+    }) {
+      onSuccess?.(data);
+    },
+    onError(error) {
+      onError?.(error);
+    },
+  });
+
+  return response;
+}
