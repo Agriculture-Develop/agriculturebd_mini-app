@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { getAdminNewsId } from '@/service/app'
+import {} from '@/service/app'
 
 const newsDetails = ref([])
 // 初始化状态

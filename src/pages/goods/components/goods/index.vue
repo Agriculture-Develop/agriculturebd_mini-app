@@ -3,30 +3,30 @@
     <view @click="jumpDetailsPage(product.id)">
       <view class="title flex items-center gap-1">
         <wd-skeleton theme="avatar" :loading="false">
-          <wd-img round :src="product.userImg" :width="70" :height="70"></wd-img>
+          <wd-img round :src="product.avatar_path" :width="70" :height="70"></wd-img>
         </wd-skeleton>
         <view class="title_mes flex items-center flex-col">
-          <view class="name text-xl font-bold">{{ product.name }}</view>
-          <view class="time text-gray-300 text-sm">{{ product.time }}</view>
+          <view class="name text-xl font-bold">{{ product.nickname }}</view>
+          <view class="time text-gray-300 text-sm">{{ formatTime(product.created_at) }}</view>
         </view>
         <view class="name text-xl font-bold">
-          <wd-tag round type="success" class="m-l-3">农户</wd-tag>
+          <wd-tag round type="success" class="m-l-3">{{ product.role }}</wd-tag>
         </view>
       </view>
       <view class="content space-y-2 py-4">
-        <view>{{ product.description }}</view>
+        <view>{{ product.title }}</view>
         <view class="flex gap-3">
           <wd-img
             class="goods-img"
-            :src="product.image"
+            :src="product.cover_url"
             :width="100"
             :height="100"
             mode="aspectFill"
           />
           <view class="tagContainer flex-1">
-            <wd-tag type="success" round class="m-2">{{ product.amount }}</wd-tag>
-            <wd-tag type="success" round class="m-2">{{ product.tagName }}</wd-tag>
-            <wd-tag type="success" round class="m-2">{{ product.price }}</wd-tag>
+            <wd-tag type="success" round class="m-2">{{ product.tag_name }}</wd-tag>
+            <wd-tag type="success" round class="m-2">{{ product.tag_price }}</wd-tag>
+            <wd-tag type="success" round class="m-2">{{ product.tag_weigh }}</wd-tag>
           </view>
         </view>
         <view
@@ -45,8 +45,23 @@
 </template>
 
 <script lang="ts" setup>
-import type { Itags, Igood } from '@/store/good'
-type Product = Itags & Igood
+import { formatTime } from '@/utils/time'
+
+type Product = {
+  id: number
+  userid: number
+  created_at: string
+  title: string
+  content: string
+  tag_name: string
+  tag_weigh: string
+  tag_price: string
+  cover_url: string
+  like: string
+  nickname: string
+  avatar_path: string
+  role: string
+}
 const isActive = ref([false, false])
 
 const props = defineProps<{

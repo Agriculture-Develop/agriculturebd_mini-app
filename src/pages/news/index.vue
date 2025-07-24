@@ -28,6 +28,7 @@ const { safeAreaInsets } = uni.getSystemInfoSync()
 // )
 const { data: newsList } = useQuery(getAdminNewsListQueryOptions({ params: { author: 'admin' } }))
 // 修改分类数据结构为 select-picker 需要的格式
+
 const categoryColumns = [
   { value: '全部', label: '全部' },
   { value: '产业动态', label: '产业动态' },

@@ -134,7 +134,7 @@ importers:
         version: 1.0.0-alpha.3(@uni-helper/uni-app-types@1.0.0-alpha.3(typescript@5.7.2)(vue@3.5.15(typescript@5.7.2)))(@uni-helper/uni-cloud-types@1.0.0-alpha.3(typescript@5.7.2)(vue@3.5.15(typescript@5.7.2)))(@uni-helper/uni-ui-types@1.0.0-alpha.3(@uni-helper/uni-app-types@1.0.0-alpha.3(typescript@5.7.2)(vue@3.5.15(typescript@5.7.2)))(typescript@5.7.2)(vue@3.5.15(typescript@5.7.2)))(typescript@5.7.2)(vue@3.5.15(typescript@5.7.2))
       '@uni-helper/unocss-preset-uni':
         specifier: ^0.2.11
-        version: 0.2.11(@unocss/preset-legacy-compat@0.59.4)(@unocss/preset-mini@66.1.2)(@unocss/rule-utils@66.1.2)(@unocss/vite@66.1.2(vite@6.3.5(@types/node@20.17.9)(jiti@2.4.2)(sass@1.77.8)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.15(typescript@5.7.2)))(unocss-applet@0.10.0(@unocss/core@66.3.3)(@unocss/preset-mini@66.1.2)(@unocss/preset-wind3@66.1.2)(unocss@66.0.0(postcss@8.4.49)(vite@6.3.5(@types/node@20.17.9)(jiti@2.4.2)(sass@1.77.8)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.15(typescript@5.7.2))))(unocss@66.0.0(postcss@8.4.49)(vite@6.3.5(@types/node@20.17.9)(jiti@2.4.2)(sass@1.77.8)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.15(typescript@5.7.2)))
+        version: 0.2.11(@unocss/preset-legacy-compat@0.59.4)(@unocss/preset-mini@66.1.2)(@unocss/rule-utils@66.3.3)(@unocss/vite@66.1.2(vite@6.3.5(@types/node@20.17.9)(jiti@2.4.2)(sass@1.77.8)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.15(typescript@5.7.2)))(unocss-applet@0.10.0(@unocss/core@66.3.3)(@unocss/preset-mini@66.1.2)(@unocss/preset-wind3@66.1.2)(unocss@66.0.0(postcss@8.4.49)(vite@6.3.5(@types/node@20.17.9)(jiti@2.4.2)(sass@1.77.8)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.15(typescript@5.7.2))))(unocss@66.0.0(postcss@8.4.49)(vite@6.3.5(@types/node@20.17.9)(jiti@2.4.2)(sass@1.77.8)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.15(typescript@5.7.2)))
       '@uni-helper/vite-plugin-uni-components':
         specifier: ^0.2.0
         version: 0.2.0(rollup@4.41.1)
@@ -7963,11 +7963,11 @@ snapshots:
       typescript: 5.7.2
       vue: 3.5.15(typescript@5.7.2)
 
-  '@uni-helper/unocss-preset-uni@0.2.11(@unocss/preset-legacy-compat@0.59.4)(@unocss/preset-mini@66.1.2)(@unocss/rule-utils@66.1.2)(@unocss/vite@66.1.2(vite@6.3.5(@types/node@20.17.9)(jiti@2.4.2)(sass@1.77.8)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.15(typescript@5.7.2)))(unocss-applet@0.10.0(@unocss/core@66.3.3)(@unocss/preset-mini@66.1.2)(@unocss/preset-wind3@66.1.2)(unocss@66.0.0(postcss@8.4.49)(vite@6.3.5(@types/node@20.17.9)(jiti@2.4.2)(sass@1.77.8)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.15(typescript@5.7.2))))(unocss@66.0.0(postcss@8.4.49)(vite@6.3.5(@types/node@20.17.9)(jiti@2.4.2)(sass@1.77.8)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.15(typescript@5.7.2)))':
+  '@uni-helper/unocss-preset-uni@0.2.11(@unocss/preset-legacy-compat@0.59.4)(@unocss/preset-mini@66.1.2)(@unocss/rule-utils@66.3.3)(@unocss/vite@66.1.2(vite@6.3.5(@types/node@20.17.9)(jiti@2.4.2)(sass@1.77.8)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.15(typescript@5.7.2)))(unocss-applet@0.10.0(@unocss/core@66.3.3)(@unocss/preset-mini@66.1.2)(@unocss/preset-wind3@66.1.2)(unocss@66.0.0(postcss@8.4.49)(vite@6.3.5(@types/node@20.17.9)(jiti@2.4.2)(sass@1.77.8)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.15(typescript@5.7.2))))(unocss@66.0.0(postcss@8.4.49)(vite@6.3.5(@types/node@20.17.9)(jiti@2.4.2)(sass@1.77.8)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.15(typescript@5.7.2)))':
     dependencies:
       '@uni-helper/uni-env': 0.1.7
       '@unocss/preset-legacy-compat': 0.59.4
-      '@unocss/rule-utils': 66.1.2
+      '@unocss/rule-utils': 66.3.3
       unocss: 66.0.0(postcss@8.4.49)(vite@6.3.5(@types/node@20.17.9)(jiti@2.4.2)(sass@1.77.8)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.15(typescript@5.7.2))
       unocss-applet: 0.10.0(@unocss/core@66.3.3)(@unocss/preset-mini@66.1.2)(@unocss/preset-wind3@66.1.2)(unocss@66.0.0(postcss@8.4.49)(vite@6.3.5(@types/node@20.17.9)(jiti@2.4.2)(sass@1.77.8)(terser@5.36.0)(yaml@2.6.1))(vue@3.5.15(typescript@5.7.2)))
     optionalDependencies:

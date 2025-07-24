@@ -60,18 +60,6 @@ export function getAdminUserListQueryOptions(options: {
   });
 }
 
-/** 获取用户信息 GET /public/user */
-export function getPublicUserQueryOptions(options: {
-  options?: CustomRequestOptions;
-}) {
-  return queryOptions({
-    queryFn: async ({ queryKey }) => {
-      return apis.getPublicUser(queryKey[1] as typeof options);
-    },
-    queryKey: ['getPublicUser', options],
-  });
-}
-
 /** 修改用户信息 PUT /public/user */
 export function usePutPublicUserMutation(options?: {
   onSuccess?: (value?: { code: number; msg: string }) => void;
@@ -90,6 +78,20 @@ export function usePutPublicUserMutation(options?: {
   });
 
   return response;
+}
+
+/** 获取用户信息 GET /public/user/${param0} */
+export function getPublicUserIdQueryOptions(options: {
+  // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
+  params: API.getPublicUserIdParams;
+  options?: CustomRequestOptions;
+}) {
+  return queryOptions({
+    queryFn: async ({ queryKey }) => {
+      return apis.getPublicUserId(queryKey[1] as typeof options);
+    },
+    queryKey: ['getPublicUserId', options],
+  });
 }
 
 /** 上传头像 POST /public/user/avatar */

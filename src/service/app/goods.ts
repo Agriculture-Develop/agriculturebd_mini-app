@@ -75,6 +75,7 @@ export async function getPublicGoodId({
     msg: string;
     data: {
       id: number;
+      user_id: number;
       title: string;
       content: string;
       cover_url: string;
@@ -224,16 +225,10 @@ export async function deletePublicGoodCommentId({
 /** 获取供需列表 获取供需列表 GET /public/good/list */
 export async function getPublicGoodList({
   params,
-  body,
   options,
 }: {
   // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
   params: API.getPublicGoodListParams;
-  body: {
-    title?: string;
-    page?: number;
-    count?: number;
-  };
   options?: CustomRequestOptions;
 }) {
   return request<{
@@ -242,9 +237,9 @@ export async function getPublicGoodList({
     data: {
       total: number;
       list: {
-        publisher_name: string;
+        id: number;
+        userid: number;
         created_at: string;
-        role: string;
         title: string;
         content: string;
         tag_name: string;
@@ -256,13 +251,9 @@ export async function getPublicGoodList({
     };
   }>('/public/good/list', {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     params: {
       ...params,
     },
-    data: body,
     ...(options || {}),
   });
 }

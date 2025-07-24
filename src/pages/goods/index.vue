@@ -2,7 +2,7 @@
 {
   style: {
     navigationStyle: 'custom',
-    enablePullDownRefresh: true, // 启用原生下拉刷新
+    enablePullDownRefresh: false, // 改为 false，由 z-paging 管理
   },
 }
 </route>
@@ -17,96 +17,134 @@
       </template>
     </wd-navbar>
 
-    <!-- 显示筛选结果或全部数据 -->
-    <view v-for="(item, index) in showList" :key="item.id">
-      <Goods :product="item" />
-    </view>
+    <z-paging
+      ref="pagingRef"
+      v-model="combinedList"
+      @query="queryList"
+      use-page-scroll
+      show-refresh-loading
+      i18n="zh-CN"
+    >
+      <template v-if="showList.length > 0">
+        <view v-for="(item, index) in showList" :key="item.id">
+          <Goods :product="item" />
+        </view>
+      </template>
 
-    <!-- 无搜索结果提示 -->
-    <view v-if="hasSearched && showList.length === 0" class="empty-tips">没有找到相关商品</view>
+      <!-- 无搜索结果提示 -->
+      <view v-else-if="hasSearched" class="empty-tips">没有找到相关商品</view>
+    </z-paging>
   </view>
 </template>
 
 <script lang="ts" setup>
+import { useQuery } from '@tanstack/vue-query'
+import { getPublicGoodList } from '@/service/app'
+import { getUserInfo } from '@/api/user'
+import { IUserInfoVo } from '@/api/user.typing'
 import Goods from './components/goods/index.vue'
-import { ref } from 'vue'
-import { useGoodStore } from '@/store'
 
+const keyword = ref('')
+const hasSearched = ref(false)
+const combinedList = ref<any[]>([])
+const searchResult = ref<any[]>([])
+const page = ref(1)
+const count = 5
+const pagingRef = ref()
 const { safeAreaInsets } = uni.getSystemInfoSync()
-const keyword = ref<string>('')
-const hasSearched = ref(false) // 标记是否执行过搜索
-const searchResult = ref<any[]>([]) // 存储搜索结果
-const goodStore = useGoodStore()
-// 商品数据
-// const tagList = ref([
-//   {
-//     name: '',
-//     amount: '',
-//     price: '',
-//   },
-// ])
-//获取tags
-const getTagsList = () => {
-  return goodStore.getTags()
+
+// 请求商品数据（原逻辑不变）
+const queryList = async (pageNo: number, pageSize: number) => {
+  try {
+    const res = await getPublicGoodList({
+      params: {
+        title: '',
+        page: pageNo,
+        count: pageSize,
+      },
+    })
+
+    const goods = res.data?.list ?? []
+    const userIds = goods.map((g) => g.userid?.toString()).filter(Boolean)
+
+    const userResponses = await Promise.all(userIds.map((id) => getUserInfo(id)))
+    const userMap: Record<string, IUserInfoVo> = {}
+    userResponses.forEach((res) => {
+      if (res?.data) userMap[res.data.id] = res.data
+    })
+
+    const merged = goods.map((item) => {
+      const user = userMap[item.userid?.toString()]
+      return {
+        ...item,
+        nickname: user?.nickname,
+        avatar_path: user?.avatar_path,
+        role: user?.role,
+      }
+    })
+
+    // 分页拼接（由 z-paging 控制）
+    pagingRef.value.complete(merged)
+  } catch (err) {
+    console.error('数据请求失败:', err)
+    pagingRef.value.complete(false)
+  }
 }
 
-const getGoodsList = () => {
-  return goodStore.getGoods()
-}
-const combineList = computed(() => {
-  return getTagsList().map((item, index) => ({
-    ...item,
-    ...getGoodsList()[index], // 合并相同索引的对象
-  }))
-})
-
-// 显示的数据（未搜索时显示全部，搜索后显示结果）
+// 显示数据（搜索后显示筛选结果）
 const showList = computed(() => {
-  return hasSearched.value ? searchResult.value : combineList.value
+  return hasSearched.value ? searchResult.value : combinedList.value
 })
 
-// 搜索处理函数（只在点击搜索按钮时触发）
-const handleSearch = () => {
+// 搜索功能（只筛选当前已加载的数据）
+const handleSearch = async () => {
   hasSearched.value = true
+  const kw = keyword.value.trim()
 
-  if (!keyword.value.trim()) {
-    // 如果关键词为空，显示全部数据
-    searchResult.value = combineList.value
-  } else {
-    // 执行筛选
-    const lowerKeyword = keyword.value.toLowerCase()
-
-    searchResult.value = combineList.value.filter((item) =>
-      item.description.toLowerCase().includes(lowerKeyword),
-    )
+  if (!kw) {
+    // 搜索框为空，恢复全部数据
+    searchResult.value = combinedList.value
+    return
   }
 
-  console.log('搜索关键词:', keyword.value)
-  console.log('搜索结果:', searchResult.value)
-}
-//下拉刷新
-
-onPullDownRefresh(() => {
-  console.log('触发下拉刷新')
-
-  // 模拟异步请求2
-  setTimeout(() => {
-    // 重置搜索状态
-    hasSearched.value = false
-    keyword.value = ''
-    // 停止下拉刷新动画
-    uni.stopPullDownRefresh()
-    // 显示刷新成功提示
-    uni.showToast({
-      title: '刷新成功',
-      icon: 'success',
+  try {
+    // 请求后端搜索结果（只搜第一页）
+    const res = await getPublicGoodList({
+      params: {
+        title: kw, // 把搜索词传到后端
+        page: 1,
+        count: 100, // 可按需调整，代表一次取多少
+      },
     })
-  }, 1000)
-})
+
+    const goods = res.data?.list ?? []
+    const userIds = goods.map((g) => g.userid?.toString()).filter(Boolean)
+
+    const userResponses = await Promise.all(userIds.map((id) => getUserInfo(id)))
+    const userMap: Record<string, IUserInfoVo> = {}
+    userResponses.forEach((res) => {
+      if (res?.data) userMap[res.data.id] = res.data
+    })
+
+    const merged = goods.map((item) => {
+      const user = userMap[item.userid?.toString()]
+      return {
+        ...item,
+        nickname: user?.nickname,
+        avatar_path: user?.avatar_path,
+        role: user?.role,
+      }
+    })
+
+    searchResult.value = merged
+  } catch (error) {
+    console.error('搜索失败:', error)
+    searchResult.value = []
+  }
+}
 </script>
 
 <style lang="scss" scoped>
-/* 保持原有样式不变 */
 .search-box {
   display: flex;
   height: 100%;

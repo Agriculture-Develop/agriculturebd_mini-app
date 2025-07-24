@@ -27,7 +27,7 @@ export type getAdminNewsIdParams = {
 
 export type getAdminNewsListParams = {
   title?: string;
-  author: string;
+  author?: string;
   status?: string;
   page?: number;
   count?: number;
@@ -55,6 +55,10 @@ export type getPublicGoodListParams = {
   title?: string;
   page?: number;
   count?: number;
+};
+
+export type getPublicUserIdParams = {
+  id: string;
 };
 
 export type news = {

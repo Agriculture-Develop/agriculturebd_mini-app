@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import lingmeng from '/src/static/images/lingmeng.jpg'
 import userImg from '@/static/images/avatar.jpg'
-import { getPetId } from '@/service/app'
 // 初始化状态
 export type Igood = {
   id: number
@@ -45,26 +44,26 @@ export const useGoodStore = defineStore(
       // run()
       // return data
       return [
-        {
-          price: '¥12.8/斤',
-          tagName: '新疆哈密瓜',
-          amount: '5斤装',
-        },
-        {
-          price: '¥6.5/斤',
-          tagName: '山东红富士苹果',
-          amount: '10斤箱装',
-        },
-        {
-          price: '¥3.2/斤',
-          tagName: '有机菠菜',
-          amount: '500g/捆',
-        },
-        {
-          price: '¥88/袋',
-          tagName: '五常大米',
-          amount: '10kg',
-        },
+        // {
+        //   price: '¥12.8/斤',
+        //   tagName: '新疆哈密瓜',
+        //   amount: '5斤装',
+        // },
+        // {
+        //   price: '¥6.5/斤',
+        //   tagName: '山东红富士苹果',
+        //   amount: '10斤箱装',
+        // },
+        // {
+        //   price: '¥3.2/斤',
+        //   tagName: '有机菠菜',
+        //   amount: '500g/捆',
+        // },
+        // {
+        //   price: '¥88/袋',
+        //   tagName: '五常大米',
+        //   amount: '10kg',
+        // },
       ]
     }
     // 定义农产品信息

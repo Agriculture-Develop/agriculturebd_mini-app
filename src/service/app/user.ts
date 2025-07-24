@@ -78,12 +78,62 @@ export async function getAdminUserList({
   });
 }
 
-/** 获取用户信息 GET /public/user */
-export async function getPublicUser({
+/** 修改用户信息 PUT /public/user */
+export async function putPublicUser({
+  body,
+  avatar,
   options,
 }: {
+  body: {
+    nickname?: string;
+    role?: string;
+  };
+  avatar?: File;
   options?: CustomRequestOptions;
 }) {
+  const formData = new FormData();
+
+  if (avatar) {
+    formData.append('avatar', avatar);
+  }
+
+  Object.keys(body).forEach((ele) => {
+    const item = (body as { [key: string]: any })[ele];
+
+    if (item !== undefined && item !== null) {
+      if (typeof item === 'object' && !(item instanceof File)) {
+        if (item instanceof Array) {
+          item.forEach((f) => formData.append(ele, f || ''));
+        } else {
+          formData.append(ele, JSON.stringify(item));
+        }
+      } else {
+        formData.append(ele, item);
+      }
+    }
+  });
+
+  return request<{ code: number; msg: string }>('/public/user', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    data: formData,
+    ...(options || {}),
+  });
+}
+
+/** 获取用户信息 GET /public/user/${param0} */
+export async function getPublicUserId({
+  params,
+  options,
+}: {
+  // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
+  params: API.getPublicUserIdParams;
+  options?: CustomRequestOptions;
+}) {
+  const { id: param0, ...queryParams } = params;
+
   return request<{
     code: number;
     msg: string;
@@ -96,30 +146,9 @@ export async function getPublicUser({
       status: string;
       created_at: string;
     };
-  }>('/public/user', {
+  }>(`/public/user/${param0}`, {
     method: 'GET',
-    ...(options || {}),
-  });
-}
-
-/** 修改用户信息 PUT /public/user */
-export async function putPublicUser({
-  body,
-  options,
-}: {
-  body: {
-    nickname: string;
-    /** 无法修改为管理员以上权限 */
-    role: string;
-  };
-  options?: CustomRequestOptions;
-}) {
-  return request<{ code: number; msg: string }>('/public/user', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: body,
+    params: { ...queryParams },
     ...(options || {}),
   });
 }

@@ -25,3 +25,6 @@ export const postFooAPI2 = (name: string) => {
 export const postFooAPI3 = (name: string) => {
   return http.post<IFooItem>('/foo', { name }, { name }, { 'Content-Type-100': '100' })
 }
+export const getUserId = (id: string) => {
+  return http.get<IFooItem[]>(`/public/user/${id}`, { id })
+}

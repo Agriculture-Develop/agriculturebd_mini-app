@@ -31,17 +31,15 @@
             <view class="bg-green-50">
               <view
                 v-for="(title, index) in item.title.slice(0, 5)"
-                class="text-gray-700 h-10 w-80% flex justify-start items-center px-4"
+                class="text-gray-700 h-10 w-90% flex justify-between items-center px-4"
                 :key="title.id"
                 @click="jumpNewsDetailsPage(title.id)"
               >
-                <text class="text-ellipsis overflow-hidden whitespace-nowrap flex-shrink-0">
+                <text class="text-ellipsis overflow-hidden whitespace-nowrap">
                   {{ title.title }}
                 </text>
-                <view v-if="index === 4" class="px-3">
-                  <wd-button type="text" @click.stop="jumpNewsPage" custom-class="!block ">
-                    查看更多
-                  </wd-button>
+                <view v-if="index === 4" class="">
+                  <wd-button type="text" @click.stop="jumpNewsPage">查看更多</wd-button>
                 </view>
               </view>
             </view>
