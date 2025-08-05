@@ -70,7 +70,7 @@ const props = defineProps<{
 
 //跳转对应的页面
 const jumpDetailsPage = (id) => {
-  uni.navigateTo({ url: `/pages/goods/details/index` })
+  uni.navigateTo({ url: `/pages/goods/details/index?id=${id}` })
 }
 //切换icon
 const toggleIcon = (index) => {

@@ -131,7 +131,7 @@
       "path": "pages/goods/publish/index",
       "type": "page",
       "style": {
-        "navigationBarTitleText": "details"
+        "navigationBarTitleText": "发布"
       }
     },
     {
