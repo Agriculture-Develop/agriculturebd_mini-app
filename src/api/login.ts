@@ -5,10 +5,10 @@ import { http } from '@/utils/http'
  * 登录表单
  */
 export interface ILoginForm {
-  username: string
-  password: string
-  code: string
-  uuid: string
+  phone: string
+  password?: string
+  code?: string
+  uuid?: string
 }
 
 /**
@@ -24,14 +24,14 @@ export const getCode = () => {
  * @param loginForm 登录表单
  */
 export const login = (loginForm: ILoginForm) => {
-  return http.post<IUserLogin>('/user/login', loginForm)
+  return http.post<IUserLogin>('/auth/login/pwd', loginForm)
 }
 
 /**
  * 获取用户信息
  */
-export const getUserInfo = () => {
-  return http.get<IUserInfoVo>('/user/info')
+export const getUserInfo = (id) => {
+  return http.get<IUserInfoVo>(`/public/user/${id}`)
 }
 
 /**
@@ -45,7 +45,7 @@ export const logout = () => {
  * 修改用户信息
  */
 export const updateInfo = (data: IUpdateInfo) => {
-  return http.post('/user/updateInfo', data)
+  return http.put('/public/user', data)
 }
 
 /**

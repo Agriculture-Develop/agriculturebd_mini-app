@@ -13,6 +13,11 @@ export type deleteAdminUserIdParams = {
   id: string;
 };
 
+export type deletePublicFilesTypesNameParams = {
+  types: string;
+  name: string;
+};
+
 export type deletePublicGoodCommentIdParams = {
   id: string;
 };
@@ -33,9 +38,9 @@ export type getAdminNewsListParams = {
   count?: number;
 };
 
-export type getFilesTypesIdParams = {
+export type getFilesTypesNameParams = {
   types: string;
-  id: string;
+  name: string;
 };
 
 export type getPublicGoodCommentIdParams = {
@@ -61,26 +66,14 @@ export type getPublicUserIdParams = {
   id: string;
 };
 
-export type news = {
+export type login = {
   code: number;
   msg: string;
-  data: {
-    id: number;
-    title: string;
-    category_id: number;
-    abstract: string;
-    keyword: string[];
-    source: string;
-    content: string;
-    cover_url: string;
-    files_url: string[];
-    status: string;
-    author: string;
-    created_at: string;
-    updated_at: string;
-  };
-  /** 大类别(新闻/政策) */
-  type: string;
+  data: { id: number; token: string; role: string };
+};
+
+export type postPublicFilesTypesParams = {
+  types: string;
 };
 
 export type postPublicGoodIdCommentParams = {

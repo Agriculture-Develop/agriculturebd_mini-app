@@ -8,53 +8,26 @@ import * as API from './types';
 /** 新建供需帖子 POST /public/good */
 export async function postPublicGood({
   body,
-  cover,
-  files,
   options,
 }: {
   body: {
+    /** ID 编号 */
     title: string;
     content: string;
-    tag_name: string;
-    tag_weigh: string;
-    tag_price: string;
+    cover: string;
+    files?: string[];
+    tag_name?: string;
+    tag_weigh?: string;
+    tag_price?: string;
   };
-  cover?: File;
-  files?: File;
   options?: CustomRequestOptions;
 }) {
-  const formData = new FormData();
-
-  if (cover) {
-    formData.append('cover', cover);
-  }
-
-  if (files) {
-    formData.append('files', files);
-  }
-
-  Object.keys(body).forEach((ele) => {
-    const item = (body as { [key: string]: any })[ele];
-
-    if (item !== undefined && item !== null) {
-      if (typeof item === 'object' && !(item instanceof File)) {
-        if (item instanceof Array) {
-          item.forEach((f) => formData.append(ele, f || ''));
-        } else {
-          formData.append(ele, JSON.stringify(item));
-        }
-      } else {
-        formData.append(ele, item);
-      }
-    }
-  });
-
   return request<{ code: number; msg: string }>('/public/good', {
     method: 'POST',
     headers: {
-      'Content-Type': 'multipart/form-data',
+      'Content-Type': 'application/json',
     },
-    data: formData,
+    data: body,
     ...(options || {}),
   });
 }
@@ -134,6 +107,7 @@ export async function getPublicGoodIdComment({
         role: string;
         like: string;
         created_at: string;
+        userid: string;
       }[];
     };
   }>(`/public/good/${param0}/comment`, {

@@ -1,6 +1,7 @@
 <template>
   <view class="goods p-3">
     <view @click="jumpDetailsPage(product.id)">
+      {{ product }}
       <view class="title flex items-center gap-1">
         <wd-skeleton theme="avatar" :loading="false">
           <wd-img round :src="product.avatar_path" :width="70" :height="70"></wd-img>

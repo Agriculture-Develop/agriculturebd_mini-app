@@ -12,7 +12,7 @@ export default [
   // },
   //npm run openapi-ts-request
   {
-    schemaPath: 'http://127.0.0.1:4523/export/openapi/3?version=3.0',
+    schemaPath: 'http://127.0.0.1:4523/export/openapi/4?version=3.0',
     serversPath: './src/service/app',
     requestLibPath: `import request from '@/utils/request';\n import { CustomRequestOptions } from '@/interceptors/request';`,
     requestOptionsType: 'CustomRequestOptions',

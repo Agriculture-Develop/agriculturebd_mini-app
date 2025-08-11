@@ -30,14 +30,14 @@ export function usePostAuthCodeMutation(options?: {
 
 /** 验证码登录 POST /auth/login/code */
 export function usePostAuthLoginCodeMutation(options?: {
-  onSuccess?: (value?: { code: number; msg: string }) => void;
+  onSuccess?: (value?: API.login) => void;
   onError?: (error?: DefaultError) => void;
 }) {
   const { onSuccess, onError } = options || {};
 
   const response = useMutation({
     mutationFn: apis.postAuthLoginCode,
-    onSuccess(data: { code: number; msg: string }) {
+    onSuccess(data: API.login) {
       onSuccess?.(data);
     },
     onError(error) {
@@ -53,7 +53,7 @@ export function usePostAuthLoginPwdMutation(options?: {
   onSuccess?: (value?: {
     code: number;
     msg: string;
-    data: { id: number; token: string };
+    data: { id: number; token: string; role: string };
   }) => void;
   onError?: (error?: DefaultError) => void;
 }) {
@@ -64,7 +64,7 @@ export function usePostAuthLoginPwdMutation(options?: {
     onSuccess(data: {
       code: number;
       msg: string;
-      data: { id: number; token: string };
+      data: { id: number; token: string; role: string };
     }) {
       onSuccess?.(data);
     },

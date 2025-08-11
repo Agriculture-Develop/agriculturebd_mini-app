@@ -12,7 +12,7 @@ const loginRoute = '/pages/login/index'
 
 const isLogined = () => {
   const userStore = useUserStore()
-  return !!userStore.userInfo.username
+  return !!userStore.userInfo.nickname
 }
 
 const isDev = import.meta.env.DEV

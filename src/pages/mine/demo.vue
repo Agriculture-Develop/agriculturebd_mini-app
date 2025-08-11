@@ -137,7 +137,10 @@ const onChooseAvatar = (e: any) => {
     uploadFileUrl.USER_AVATAR,
     {},
     {
-      onSuccess: (res) => useUserStore().getUserInfo(),
+      onSuccess: (res) => {
+        useUserStore().getUserInfo()
+        console.log('头像上传成功', res)
+      },
     },
     avatarUrl,
   )

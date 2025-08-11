@@ -21,12 +21,11 @@
                 prop="name"
                 type="nickname"
                 clearable
-                v-model="formData.username"
+                v-model="formData.nickname"
                 placeholder="请输入昵称"
                 class="form-input"
               />
             </view>
-
             <!-- 角色-->
             <view class="row-field">
               <text class="field-label">角色</text>
@@ -35,21 +34,18 @@
                 shape="button"
                 :rules="[{ required: true, message: '请选择角色' }]"
               >
-                <wd-radio :value="'1'">农户</wd-radio>
-                <wd-radio :value="'0'">供应商</wd-radio>
+                <wd-radio value="农户">农户</wd-radio>
+                <wd-radio value="供应商">供应商</wd-radio>
               </wd-radio-group>
             </view>
             <!-- 更换头像 -->
+
             <view class="row-field">
               <text class="field-label">更换头像</text>
               <wd-cell class="flex-1 justify-end">
-                <button
-                  class="size-10 !p-0 rounded-full"
-                  open-type="chooseAvatar"
-                  @chooseavatar="onChooseAvatar"
-                >
+                <button class="size-10 !p-0 rounded-full" @click="chooseImage">
                   <wd-img
-                    :src="formData.avatar || '/static/images/default-avatar.png'"
+                    :src="tempFile || avatar(formData.avatar)"
                     width="40px"
                     height="40px"
                     radius="50%"
@@ -79,10 +75,12 @@ import { useUserStore } from '@/store'
 import { useToast } from 'wot-design-uni'
 import { uploadFileUrl, useUpload } from '@/utils/uploadFile'
 import { storeToRefs } from 'pinia'
-import { IUploadSuccessInfo } from '@/api/login.typings'
+import { putPublicUser } from '@/service/app'
+import { avatar, goodImg } from '@/utils/imges'
 
 // 表单引用
 const formRef = ref()
+console.log(uploadFileUrl.USER_AVATAR)
 
 // 用户信息
 const userStore = useUserStore()
@@ -90,81 +88,55 @@ const { userInfo } = storeToRefs(userStore)
 
 // 表单数据
 const formData = ref({
-  username: userInfo.value.username,
-  avatar: userInfo.value.avatar,
-  id: userInfo.value.id,
+  nickname: userInfo.value.nickname,
+  avatar: userInfo.value.avatar_path,
   role: userInfo.value.role,
 })
-
+const tempFile = ref('')
 // 提交表单
 const handleSubmit = async () => {
   // 表单验证
   const valid = await formRef.value.validate()
   if (!valid) return
-  const avatar = formData.value.avatar
-  const { run: uploadAvatar } = useUpload<IUploadSuccessInfo>(
-    uploadFileUrl.USER_AVATAR,
-    {},
-    {
-      onSuccess: (res) => useUserStore().getUserInfo,
-    },
-    avatar,
-  )
-  uploadAvatar()
+  //上传头像
+  if (tempFile.value) {
+    await new Promise((resolve) => {
+      uni.uploadFile({
+        url: uploadFileUrl.USER_AVATAR,
+        filePath: formData.value.avatar,
+        name: 'file',
+        success: async (uploadFileRes) => {
+          const data = JSON.parse(uploadFileRes.data)
+          // imgStr.value = data.data.url
+          console.log(data.data.name, '上传成功')
+          formData.value.avatar = data.data.name // 更新表单数据中的头像路径
+          resolve(true)
+        },
+      })
+    })
+  }
   console.log('提交表单', formData.value)
-
-  const { msg } = await updateInfo(formData.value)
+  //修改用户信息
+  await putPublicUser({ body: formData.value })
   userStore.getUserInfo()
-  toast.success(msg)
-  console.log(userStore.userInfo)
+  toast.success('修改完成')
 }
 
-// #ifndef MP-WEIXIN
-// 上传头像
-// const { run:uploadAvatar } = useUpload<IUploadSuccessInfo>(
-//   uploadFileUrl.USER_AVATAR,
-//   {},
-//   {
-//     onSuccess: (res) => useUserStore().getUserInfo(),
-//   },
-// )
-// #endif
-
-// 微信小程序下登录
-const handleLogin = async () => {
-  // #ifdef MP-WEIXIN
-
-  // 微信登录
-  await userStore.wxLogin()
-  hasLogin.value = true
-  // #endif
-  // #ifndef MP-WEIXIN
-  uni.navigateTo({ url: '/pages/login/index' })
-  // #endif
-}
-
-// 微信小程序下选择头像事件
-const onChooseAvatar = (e: any) => {
-  console.log('选择头像', e.detail)
-  const { avatarUrl } = e.detail
-  formData.value.avatar = avatarUrl // 更新表单数据中的头像
-  const { run: uploadAvatar } = useUpload<IUploadSuccessInfo>(
-    uploadFileUrl.USER_AVATAR,
-    {},
-    {
-      onSuccess: (res) => useUserStore().getUserInfo,
+//选择头像
+const chooseImage = () => {
+  uni.chooseMedia({
+    count: 1,
+    mediaType: ['image'],
+    success: (res) => {
+      console.log(res)
+      const tempFilePath = res.tempFiles[0].tempFilePath
+      formData.value.avatar = tempFilePath
+      tempFile.value = tempFilePath
     },
-    avatarUrl,
-  )
-  console.log('头像上传成功', avatarUrl, formData.value.avatar)
+  })
 }
-
-// #ifdef MP-WEIXIN
-// 微信小程序下设置用户名
-const getUserInfo = (e: any) => {
-  console.log(e.detail)
-}
-// #endif
+//
+computed
 </script>
 
 <style lang="scss" scoped>

@@ -74,7 +74,26 @@ export async function getAdminNewsId({
 }) {
   const { id: param0, ...queryParams } = params;
 
-  return request<API.news>(`/admin/news/${param0}`, {
+  return request<{
+    code: number;
+    msg: string;
+    data: {
+      id: number;
+      title: string;
+      category_id: number;
+      abstract: string;
+      keyword: string[];
+      source: string;
+      content: string;
+      cover_url: string;
+      files_url: string[];
+      status: string;
+      author: string;
+      created_at: string;
+      updated_at: string;
+    };
+    type: string;
+  }>(`/admin/news/${param0}`, {
     method: 'GET',
     params: { ...queryParams },
     ...(options || {}),

@@ -5,6 +5,15 @@ import {
   logout as _logout,
   getWxCode,
 } from '@/api/login'
+import {
+  postAuthLoginPwd,
+  postAuthLoginCode,
+  putPublicUser,
+  getPublicUserId,
+  getPublicUser,
+  postAuthRegister,
+  postAuthCode,
+} from '@/service/app'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { toast } from '@/utils/toast'
@@ -12,10 +21,8 @@ import { IUserInfoVo } from '@/api/login.typings'
 
 // 初始化状态
 const userInfoState: IUserInfoVo = {
-  id: '0',
-  username: '111',
-  avatar: '/static/images/default-avatar.png',
-  token: '',
+  nickname: '微信用户',
+  avatar_path: '/static/images/default-avatar.png',
   role: '农户',
 }
 
@@ -28,11 +35,12 @@ export const useUserStore = defineStore(
     const setUserInfo = (val: IUserInfoVo) => {
       console.log('设置用户信息', val)
       // 若头像为空 则使用默认头像
-      if (!val.avatar) {
-        val.avatar = userInfoState.avatar
-      } else {
-        val.avatar = 'https://oss.laf.run/ukw0y1-site/avatar.jpg?feige'
-      }
+      // if (!val.avatar_path) {
+      //   val.avatar_path = userInfoState.avatar_path
+      // }
+      //  else {
+      //   val.avatar_path = val.avatar_path
+      // }
       userInfo.value = val
     }
     // 删除用户信息
@@ -46,27 +54,39 @@ export const useUserStore = defineStore(
      * @param credentials 登录参数
      * @returns R<IUserLogin>
      */
-    const login = async (credentials: {
-      username: string
-      password: string
-      code: string
-      uuid: string
-    }) => {
-      const res = await _login(credentials)
+    const login = async (credentials: { phone: string; password: string }) => {
+      // const res = await _login(credentials)
+      const res = await postAuthLoginPwd({ body: credentials })
+
+      uni.setStorageSync('token', res.data.token)
       console.log('登录信息', res)
-      toast.success('登录成功')
+      // toast.success('登录成功')
       getUserInfo()
       return res
     }
+    const codeLogin = async (credentials: { phone: string; auth_code: string }) => {
+      // const res = await _login(credentials)
+      const res = await postAuthLoginCode({ body: credentials })
+      console.log('登录信息', res)
+      // toast.success('登录成功')
+      uni.setStorageSync('token', res.data.token)
+      getUserInfo()
+      return res
+    }
+    //注册
+    const register = async (pas) => {
+      const res = await postAuthRegister({ body: pas })
+      toast.success('注册成功，请登录')
+    }
+
     /**
      * 获取用户信息
      */
     const getUserInfo = async () => {
-      const res = await _getUserInfo()
+      const res = await getPublicUser({})
       const userInfo = res.data
       setUserInfo(userInfo)
       uni.setStorageSync('userInfo', userInfo)
-      uni.setStorageSync('token', userInfo.token)
       // TODO 这里可以增加获取用户路由的方法 根据用户的角色动态生成路由
       return res
     }
@@ -74,7 +94,7 @@ export const useUserStore = defineStore(
      * 退出登录 并 删除用户信息
      */
     const logout = async () => {
-      _logout()
+      // _logout()
       removeUserInfo()
     }
     /**
@@ -96,6 +116,8 @@ export const useUserStore = defineStore(
       wxLogin,
       getUserInfo,
       logout,
+      codeLogin,
+      register,
     }
   },
   {

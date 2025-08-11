@@ -46,49 +46,58 @@
           <wd-input
             label="数量"
             label-width="100px"
-            prop="tag_amount"
+            prop="tag_weigh"
             clearable
             v-model="model.tag_weigh"
             placeholder="数量"
           />
         </wd-cell-group>
-        <wd-upload
-          multiple
-          :max-count="3"
-          v-model:file-list="model.files"
-          :auto-upload="false"
-          @change=""
-        >
-          <wd-button>选择图片</wd-button>
-        </wd-upload>
+        <view class="flex items-center gap-x-4">
+          <view>上传封面图片</view>
+          <view>
+            <wd-upload
+              ref="uploader"
+              :rules="[{ required: true, message: '请上传封面' }]"
+              :limit="1"
+              v-model:file-list="coverList"
+              :action="uploadFileUrl.USER_AVATAR"
+              @remove="handleRemove"
+              name="cover"
+            ></wd-upload>
+          </view>
+        </view>
+        <view class="flex items-center gap-x-4">
+          <view>上传帖子图片</view>
+
+          <wd-upload
+            multiple
+            :limit="3"
+            v-model:file-list="fileList"
+            :action="uploadFileUrl.GOOD_FILES"
+            :name="'files'"
+            @remove="handleRemove"
+            @change="handleChange"
+          ></wd-upload>
+        </view>
         <view class="footer w-full">
           <wd-button type="primary" size="large" @click="handleSubmit" class="" block>
             提交
           </wd-button>
         </view>
       </wd-form>
-      {{ model }}
-      {{ form }}
     </view>
-    <!-- <wd-upload
-      v-model:file-list="fileList"
-      image-mode="aspectFill"
-      :action="action"
-      :before-upload="beforeUpload"
-    ></wd-upload> -->
   </view>
-
-  <!-- {{ fileList }} -->
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useToast, useMessage } from 'wot-design-uni'
 import { UploadFile } from 'wot-design-uni/components/wd-upload/types'
+import { uploadFileUrl } from '@/utils/uploadFile'
+import { deletePublicFilesTypesName, postPublicGood } from '@/service/app'
 const messageBox = useMessage()
 const toast = useToast()
-const value = ref<string>('输入段落信息输入段落信息输入段落信息输入段落信息输入段落信息')
-const titleValue = ref<string>('输入标题')
+
 const form = ref()
 const model = reactive<{
   tag_name: string
@@ -96,62 +105,83 @@ const model = reactive<{
   tag_price: string
   title: string
   content: string
-  cover?: string
-  files: UploadFile[]
+  cover: string
+  files: string[]
 }>({
   tag_name: '',
   tag_weigh: '',
   tag_price: '',
   title: '',
   content: '',
-  cover: null,
+  cover: '',
   files: [],
 })
-const fileList = ref<any[]>([
-  'https://img12.360buyimg.com//n0/jfs/t1/29118/6/4823/55969/5c35c16bE7c262192/c9fdecec4b419355.jpg',
-])
-
-const action: string =
-  'https://mockapi.eolink.com/zhTuw2P8c29bc981a741931bdd86eb04dc1e8fd64865cb5/upload'
-const beforeUpload = ({ files, resolve }) => {
-  messageBox
-    .confirm({
-      msg: '是否上传',
-      title: '提示',
-    })
-    .then(() => {
-      resolve(true)
-    })
-    .catch(() => {
-      toast.show('取消上传操作')
-    })
-}
-//上传信息
+const fileList = ref<UploadFile[]>([])
+const coverList = ref<UploadFile[]>([])
 
 //表单校验
-const { success: showSuccess } = useToast()
+const { success: showSuccess, error: showError } = useToast()
 
 const rules = {
-  tagname: [{ required: true, message: '请填写名称' }],
-  price: [{ required: true, message: '请填写价格' }],
-  amount: [{ required: true, message: '请填写数量' }],
+  tag_name: [{ required: true, message: '请填写名称' }],
+  tag_price: [{ required: true, message: '请填写价格' }],
+  tag_weigh: [{ required: true, message: '请填写数量' }],
 }
 
-function handleSubmit() {
+//获取图片信息
+
+function handleChange({ fileList: files }) {
+  fileList.value = files
+  console.log('文件列表', fileList.value)
+}
+function handleRemove({ file }) {
+  console.log('删除文件', file)
+
+  const res = JSON.parse(file.response as string)?.data?.name
+  console.log(res, '删除的文件名')
+
+  deletePublicFilesTypesName({ params: { types: 'good', name: res } }).then((res) => {
+    console.log('删除成功', res)
+  })
+}
+async function handleSubmit() {
   form.value
     .validate()
-    .then(({ valid, errors }) => {
-      if (valid) {
-        showSuccess({
-          msg: '校验通过',
+    .then(async ({ valid, errors }) => {
+      if (fileList.value.length === 0 || coverList.value.length === 0) {
+        showError({
+          msg: '请上传封面或图片',
         })
+        return
+      }
+      if (valid) {
+        console.log(fileList.value, 'fileList')
+        console.log(coverList.value, 'coverList')
+        fileList.value.map((item) => {
+          const name = JSON.parse(item.response as string)?.data?.name
+          console.log(name, 'name')
+
+          model.files.push(name)
+          console.log(name, model.files)
+        })
+        const res = JSON.parse(coverList.value[0].response as string)?.data?.name
+        model.cover = res
+        console.log(model.cover, 'cover')
+        console.log(model.files, 'files')
+
+        await postPublicGood({ body: model })
         console.log('提交数据', model)
+        showSuccess({
+          msg: '发布成功',
+        })
+        // uni.switchTab({ url: '/pages/index/index' })
       }
     })
     .catch((error) => {
       console.log(error, 'error')
     })
 }
+//test
 </script>
 
 <style lang="scss" scoped>

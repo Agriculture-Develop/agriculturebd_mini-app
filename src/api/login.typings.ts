@@ -2,10 +2,8 @@
  * 用户信息
  */
 export type IUserInfoVo = {
-  id?: string
-  username: string
-  avatar: string
-  token?: string
+  nickname: string
+  avatar_path: string
   role: string
 }
 

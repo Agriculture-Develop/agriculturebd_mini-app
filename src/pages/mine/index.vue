@@ -8,33 +8,19 @@
 
 <template>
   <view class="profile-container">
-    <!-- {{ JSON.stringify(userStore.userInfo) }} -->
     <!-- 用户信息区域 -->
-    <view class="user-info-section">
-      <!-- #ifdef MP-WEIXIN -->
-      <button class="avatar-button" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
-        <wd-img :src="userStore.userInfo.avatar" width="80px" height="80px" radius="50%"></wd-img>
-      </button>
-      <!-- #endif -->
-      <!-- #ifndef MP-WEIXIN -->
-      <view class="avatar-wrapper bg-red" @click="run">
-        <wd-img :src="userStore.userInfo.avatar" width="100%" height="100%" radius="50%"></wd-img>
+    <view class="user-info-section gap-4">
+      <view>
+        <wd-img
+          :src="avatar(userStore.userInfo.avatar_path)"
+          width="80px"
+          height="80px"
+          radius="50%"
+          mode="aspectFill"
+        ></wd-img>
       </view>
-      <!-- #endif -->
-      <view class="user-details">
-        <!-- #ifdef MP-WEIXIN -->
-        <input
-          type="nickname"
-          class="weui-input"
-          placeholder="请输入昵称"
-          v-model="userStore.userInfo.username"
-        />
-        <!-- #endif -->
-        <!-- #ifndef MP-WEIXIN -->
-        <view class="username">{{ userStore.userInfo.username }}</view>
-        <!-- #endif -->
-        <view class="user-id">ID: {{ userStore.userInfo.id }}</view>
-      </view>
+      <view class="font-bold line-height-15">{{ userStore.userInfo.nickname }}</view>
+      <view class="font-bold line-height-15">{{ userStore.userInfo.role }}</view>
     </view>
 
     <!-- 功能区块 -->
@@ -51,14 +37,12 @@
             <wd-icon name="lock-on" size="20px"></wd-icon>
           </template>
         </wd-cell>
+        <wd-cell title="我的发布" is-link @click="handlePost">
+          <template #icon>
+            <wd-icon name="add" size="20px"></wd-icon>
+          </template>
+        </wd-cell>
       </view>
-      <!-- 预览图片 -->
-      <image
-        v-if="previewImage"
-        :src="previewImage"
-        mode="aspectFit"
-        style="width: 300px; height: 300px; border: 1px dashed #eee"
-      />
 
       <view class="logout-button-wrapper">
         <wd-button type="error" v-if="hasLogin" block @click="handleLogout">退出登录</wd-button>
@@ -70,10 +54,8 @@
 
 <script lang="ts" setup>
 import { useUserStore } from '@/store'
+import { avatar } from '@/utils/imges'
 import { useToast } from 'wot-design-uni'
-import { uploadFileUrl, useUpload } from '@/utils/uploadFile'
-import { storeToRefs } from 'pinia'
-import { IUploadSuccessInfo } from '@/api/login.typings'
 
 const userStore = useUserStore()
 
@@ -86,73 +68,16 @@ onShow((options) => {
 
   hasLogin.value && useUserStore().getUserInfo()
 })
-//预览图片
-const previewImage = ref('')
-
-const selectImage = () => {
-  uni.chooseImage({
-    count: 1, // 默认只选1张
-    sizeType: ['original', 'compressed'], // 可以指定选择原图或压缩图
-    sourceType: ['album', 'camera'], // 从相册或相机选择
-    success: (res) => {
-      // 获取临时路径并预览
-      previewImage.value = res.tempFilePaths[0]
-      console.log('本地临时路径:', res.tempFilePaths[0])
-    },
-    fail: (err) => {
-      console.error('选择失败:', err)
-      uni.showToast({ title: '选择图片失败', icon: 'none' })
-    },
-  })
-}
-// #ifndef MP-WEIXIN
-// 上传头像
-const { run } = useUpload<IUploadSuccessInfo>(
-  uploadFileUrl.USER_AVATAR,
-  {},
-  {
-    onSuccess: (res) => useUserStore().getUserInfo(),
-  },
-)
-// #endif
 
 // 微信小程序下登录
 const handleLogin = async () => {
   // #ifdef MP-WEIXIN
-
   // 微信登录
-  await userStore.wxLogin()
-  hasLogin.value = true
+  // await userStore.wxLogin()
+  // hasLogin.value = true
   // #endif
-  // #ifndef MP-WEIXIN
   uni.navigateTo({ url: '/pages/login/index' })
-  // #endif
 }
-
-// #ifdef MP-WEIXIN
-
-// 微信小程序下选择头像事件
-const onChooseAvatar = (e: any) => {
-  console.log('选择头像', e.detail)
-  const { avatarUrl } = e.detail
-  const { run } = useUpload<IUploadSuccessInfo>(
-    uploadFileUrl.USER_AVATAR,
-    {},
-    {
-      onSuccess: (res) => useUserStore().getUserInfo(),
-    },
-    avatarUrl,
-  )
-  run()
-}
-// #endif
-
-// #ifdef MP-WEIXIN
-// 微信小程序下设置用户名
-const getUserInfo = (e: any) => {
-  console.log(e.detail)
-}
-// #endif
 
 // 个人资料
 const handleProfileInfo = () => {
@@ -162,7 +87,10 @@ const handleProfileInfo = () => {
 const handlePassword = () => {
   uni.navigateTo({ url: `/pages/mine/password/index` })
 }
-
+//我的发帖
+const handlePost = () => {
+  uni.navigateTo({ url: `/pages/mine/post/index` })
+}
 // 退出登录
 const handleLogout = () => {
   uni.showModal({

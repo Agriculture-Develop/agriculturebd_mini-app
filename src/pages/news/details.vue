@@ -18,23 +18,23 @@
     <view class="p-4">
       <!-- 文章头部 -->
       <view class="mb-6">
-        <view class="text-xl font-bold mb-3">{{ data.title }}</view>
+        <view class="text-xl font-bold mb-3">{{ data?.title }}</view>
         <view class="flex items-center justify-start gap-3 text-gray-500 text-sm">
-          <text class="whitespace-nowrap">{{ data.author }}</text>
-          <text class="whitespace-nowrap">{{ data.source }}</text>
-          <text class="whitespace-nowrap">{{ data.created_at }}</text>
+          <text class="whitespace-nowrap">{{ data?.author }}</text>
+          <text class="whitespace-nowrap">{{ data?.source }}</text>
+          <text class="whitespace-nowrap">{{ data?.created_at }}</text>
         </view>
       </view>
 
       <!-- 文章内容 -->
       <view class="mb-6">
-        <text class="text-gray-700 leading-relaxed">{{ data.content }}</text>
+        <text class="text-gray-700 leading-relaxed">{{ data?.content }}</text>
       </view>
 
       <!-- 图片展示 -->
       <view class="mb-6">
         <view class="grid grid-cols-3 gap-2">
-          <view v-for="(image, index) in data.files_url" :key="index" class="aspect-square">
+          <view v-for="(image, index) in data?.files_url" :key="index" class="aspect-square">
             <image :src="image" class="w-full h-full object-cover rounded-lg" mode="aspectFill" />
           </view>
         </view>
@@ -43,7 +43,7 @@
       <!-- 标签 -->
       <view class="mb-6 flex flex-wrap gap-2">
         <wd-tag
-          v-for="tag in data.keyword"
+          v-for="tag in data?.keyword"
           :key="tag"
           type="success"
           round

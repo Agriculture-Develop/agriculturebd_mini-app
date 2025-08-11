@@ -36,7 +36,7 @@ export async function postAuthLoginCode({
   };
   options?: CustomRequestOptions;
 }) {
-  return request<{ code: number; msg: string }>('/auth/login/code', {
+  return request<API.login>('/auth/login/code', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ export async function postAuthLoginPwd({
   return request<{
     code: number;
     msg: string;
-    data: { id: number; token: string };
+    data: { id: number; token: string; role: string };
   }>('/auth/login/pwd', {
     method: 'POST',
     headers: {

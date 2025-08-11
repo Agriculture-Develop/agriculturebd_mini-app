@@ -14,46 +14,54 @@
           <wd-cell-group class="form-group">
             <!-- 昵称 -->
             <view class="sex-field">
-              <text class="field-label">旧密码</text>
+              <text class="field-label">手机号</text>
               <wd-input
-                prop="oldPassword"
+                prop="phone"
                 clearable
-                v-model="formData.oldPassword"
-                placeholder="请输入旧密码"
-                show-password
-                :rules="[{ required: true, message: '请填写旧密码' }]"
+                v-model="formData.phone"
+                placeholder="请输入手机号"
+                :rules="[{ required: true, pattern: phoneRegex, message: '请填写正确的手机号' }]"
                 class="form-input"
               />
             </view>
             <view class="sex-field">
               <text class="field-label">新密码</text>
               <wd-input
-                prop="newPassword"
+                prop="password"
                 clearable
-                v-model="formData.newPassword"
+                v-model="formData.password"
                 placeholder="请输入新密码"
                 show-password
-                :rules="[{ required: true, message: '请填写新密码' }]"
+                :rules="[
+                  {
+                    required: true,
+                    pattern: alphaNumRegex,
+                    message: '请输入必须同时包含字母和数字且长度6-20位的密码',
+                  },
+                ]"
                 class="form-input"
               />
             </view>
             <view class="sex-field">
-              <text class="field-label">确认密码</text>
+              <text class="field-label">验证码</text>
               <wd-input
-                prop="confirmPassword"
+                prop="auth_code"
                 clearable
-                v-model="formData.confirmPassword"
-                placeholder="请输入新密码"
-                show-password
-                :rules="[{ required: true, message: '请填写新密码' }]"
+                v-model="formData.auth_code"
+                placeholder="请输入验证码"
+                :rules="[{ required: true, message: '请输入验证码' }]"
                 class="form-input"
-              />
+              >
+                <template #suffix>
+                  <wd-button @click="getCode" size="small">获取验证码</wd-button>
+                </template>
+              </wd-input>
             </view>
           </wd-cell-group>
         </wd-form>
 
         <!-- 操作按钮 -->
-        <view class="form-actions">
+        <view class="form-actions flex">
           <wd-button type="primary" size="large" @click="handleSubmit">保存修改</wd-button>
         </view>
       </view>
@@ -65,32 +73,44 @@
 import { ref } from 'vue'
 import { useUserStore } from '@/store'
 import { storeToRefs } from 'pinia'
-import { toast } from '@/utils/toast'
-import { updateInfo, updateUserPassword } from '@/api/login'
-
+import { showToast, toast } from '@/utils/toast'
+import { postAuthCode, putAuthPassword } from '@/service/app'
+import { useToast } from 'wot-design-uni'
+const { success: showSuccess, error: showError } = useToast()
 // 表单引用
 const formRef = ref()
-
+const phoneRegex = /^1[3-9]\d{9}$/
+const alphaNumRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,20}$/
 // 用户信息
-const userStore = useUserStore()
-const { userInfo } = storeToRefs(userStore)
 
 // 表单数据
 const formData = ref({
-  id: userInfo.value.id,
-  oldPassword: '',
-  newPassword: '',
-  confirmPassword: '',
+  phone: '',
+  password: '',
+  auth_code: '',
 })
-
+//获取验证码
+const getCode = async () => {
+  if (!phoneRegex.test(formData.value.phone)) {
+    showError('请输入正确的手机号')
+    return
+  }
+  const res = await postAuthCode({ body: { phone: formData.value.phone } })
+}
 // 提交表单
 const handleSubmit = async () => {
   // 表单验证
   const valid = await formRef.value.validate()
   if (!valid) return
-  const { message } = await updateUserPassword(formData.value)
+  const res = await putAuthPassword({ body: formData.value })
+  if (res.code !== 200) {
+    showError(res.msg)
+    return
+  }
   await useUserStore().logout()
-  toast.success('修改成功，请重新登录')
+  showSuccess('修改成功，请重新登录')
+  // 跳转到首页或重定向页面
+  uni.redirectTo({ url: '/pages/mine/index' })
 }
 </script>
 
@@ -184,6 +204,7 @@ const handleSubmit = async () => {
   display: flex;
   flex-direction: row;
   gap: 20rpx;
+  justify-content: center;
 }
 
 .submit-btn {

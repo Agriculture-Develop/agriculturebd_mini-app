@@ -1,4 +1,5 @@
 <template>
+  <view></view>
   <view v-for="(item, index) in visibleList" :key="item.id">
     <Goods :product="item" />
   </view>

@@ -9,7 +9,8 @@
 
 <template>
   <view class="space-y-4">
-    <wd-swiper :list="good.data.files_url" v-model:current="current" class="p-5" />
+    <wd-swiper :list="good?.data.files_url" v-model:current="current" class="p-5" />
+
     <view class="content w-95vw m-a space-y-4">
       <view class="title font-bold">{{ good.data.title }}</view>
       <view class="section leading-loose">
@@ -23,13 +24,13 @@
       </view>
       <wd-divider></wd-divider>
       <view class="commentContainer space-y-5">
-        <view>共{{ commentList.data.total }}条评论</view>
+        <view>共{{ commentList?.data.total }}条评论</view>
         <view class="flex items-center">
           <!-- <wd-skeleton :row-col="[{ size: '70rpx', type: 'circle' }]" /> -->
           <wd-img
             :src="
-              userStore.userInfo.avatar
-                ? userStore.userInfo.avatar
+              userStore.userInfo.avatar_path
+                ? userStore.userInfo.avatar_path
                 : '/static/images/default-avatar.png'
             "
             width="70rpx"
@@ -49,7 +50,7 @@
         <!-- 评论 -->
         <view
           class="publish flex items-center gap-x-4"
-          v-for="item in commentList.data.list"
+          v-for="item in commentList?.data.list"
           :key="item.id"
         >
           <wd-img :src="item.avatar" width="90rpx" height="90rpx" radius="50%"></wd-img>
