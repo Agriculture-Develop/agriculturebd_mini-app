@@ -1,12 +1,11 @@
 <template>
   <view class="goods p-3">
     <view @click="jumpDetailsPage(product.id)">
-      {{ product }}
       <view class="title flex items-center gap-1">
         <wd-skeleton theme="avatar" :loading="false">
-          <wd-img round :src="product.avatar_path" :width="70" :height="70"></wd-img>
+          <wd-img round :src="avatar(product.avatar_path)" :width="70" :height="70"></wd-img>
         </wd-skeleton>
-        <view class="title_mes flex items-center flex-col">
+        <view class="title_mes flex flex-col">
           <view class="name text-xl font-bold">{{ product.nickname }}</view>
           <view class="time text-gray-300 text-sm">{{ formatTime(product.created_at) }}</view>
         </view>
@@ -19,7 +18,7 @@
         <view class="flex gap-3">
           <wd-img
             class="goods-img"
-            :src="product.cover_url"
+            :src="goodImg(product.cover_url)"
             :width="100"
             :height="100"
             mode="aspectFill"
@@ -46,6 +45,7 @@
 </template>
 
 <script lang="ts" setup>
+import { avatar, goodImg } from '@/utils/imges'
 import { formatTime } from '@/utils/time'
 
 type Product = {

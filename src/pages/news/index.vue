@@ -26,7 +26,7 @@ const { safeAreaInsets } = uni.getSystemInfoSync()
 //     immediate: true,
 //   },
 // )
-const { data: newsList } = useQuery(getAdminNewsListQueryOptions({ params: { author: 'admin' } }))
+const { data: newsList } = useQuery(getAdminNewsListQueryOptions({ params: { author: '' } }))
 // 修改分类数据结构为 select-picker 需要的格式
 
 const categoryColumns = [
@@ -35,6 +35,7 @@ const categoryColumns = [
   { value: '科技创新', label: '科技创新' },
   { value: '电商发展', label: '电商发展' },
   { value: '品牌建设', label: '品牌建设' },
+  { value: '政策法规', label: '政策法规' },
 ]
 
 const currentPage = ref(1)

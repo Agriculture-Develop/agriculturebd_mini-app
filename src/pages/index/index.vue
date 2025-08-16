@@ -21,14 +21,17 @@
     <!-- <view class="swiper mt-(-3)">
       <wd-swiper :list="swiperList" autoplay v-model:current="current"></wd-swiper>
     </view> -->
+    {{ tabs }}
+
     <view class="tab-container relative">
       <view class="absolute left-0 translate-y--50% top-(21px) z-1 text-green text-2xl">
         新闻动态
       </view>
+
       <wd-tabs v-model="tab" custom-class="tabs" color="green">
         <block v-for="item in tabs" :key="item.name">
           <wd-tab :title="`${item.name}`">
-            <view class="bg-green-50">
+            <view class="bg-green-50 !min-h-20">
               <view
                 v-for="(title, index) in item.title.slice(0, 5)"
                 class="text-gray-700 h-10 w-90% flex justify-between items-center px-4"
@@ -48,20 +51,23 @@
         <view class="absolute right-3 bottom-(-4) z-1"></view>
       </wd-tabs>
     </view>
-    <goodContainer :show-all="false" />
+    <goodContainer />
     <view flex justify-center>
       <wd-button @click="jumpGoodsPage">查看全部</wd-button>
     </view>
   </view>
+  <view class="content">
+    <!-- #ifdef MP-WEIXIN -->
+    <ws-wx-privacy id="privacy-popup"></ws-wx-privacy>
+    <!-- #endif -->
+    <button @click="doRequire">模拟隐私接口</button>
+  </view>
 </template>
 
 <script lang="ts" setup>
+import { IUserInfoVo } from '@/api/login.typings'
 import goodContainer from '../goods/components/goods/goodContainer.vue'
-import { getAdminNewsListQueryOptions } from '@/service/app'
-import { useQuery } from '@tanstack/vue-query'
-
-// 将图片转为base64
-backgroundImage: '../../static/images/background.png;base64,...'
+import { getAdminNewsList } from '@/service/app'
 
 const current = ref<number>(0)
 const swiperList = ref(['/static/images/lingmeng.jpg', '/static/images/lingmeng.jpg'])
@@ -69,7 +75,24 @@ const tab = ref<number>(0)
 defineOptions({
   name: 'Home',
 })
-
+onMounted(() => {
+  doRequire()
+})
+function doRequire() {
+  // #ifdef MP-WEIXIN
+  ;(uni as any).requirePrivacyAuthorize({
+    success: () => {
+      console.log('同意')
+      // 用户同意授权
+      // 继续小程序逻辑
+    },
+    fail: () => {
+      console.log('拒绝')
+    }, // 用户拒绝授权
+    complete: () => {},
+  })
+  // #endif
+}
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 //跳转对应的页面
@@ -91,34 +114,16 @@ const tabs = ref<Itabs[]>([
   { name: '政策', title: [] },
 ])
 // 使用 Vue Query 获取新闻数据
-const { data } = useQuery(getAdminNewsListQueryOptions({ params: { author: 'amd' } }))
-// await suspense()
-// if (data.value?.data?.list) {
-//   data.value.data.list.forEach((item) => {
-//     console.log(item.type)
-//     if (item.type === '新闻') {
-//       tabs.value[0].title.push(item.title)
-//     } else if (item.type === '政策') {
-//       tabs.value[1].title.push(item.title)
-//     }
-//   })
-//   console.log('新闻数据', tabs.value)
-// }
-watch(
-  () => data.value,
-  (newData) => {
-    if (newData?.data?.list) {
-      newData.data.list.forEach((item) => {
-        if (item.type === '新闻') {
-          tabs.value[0].title.push({ title: item.title, id: item.id })
-        } else if (item.type === '政策') {
-          tabs.value[1].title.push({ title: item.title, id: item.id })
-        }
-      })
-    }
-  },
-  { immediate: true }, // 初始化时立即执行一次
-)
+const getNews = async () => {
+  const res = await getAdminNewsList({ params: {} })
+  res.data.list.forEach((item) => {
+    if (item.type === '新闻') tabs.value[0].title.push({ title: item.title, id: item.id })
+    else item.type === '政策'
+    tabs.value[1].title.push({ title: item.title, id: item.id })
+  })
+  console.log(tabs.value)
+}
+getNews()
 </script>
 <style lang="scss" scoped>
 :deep(.tabs) {

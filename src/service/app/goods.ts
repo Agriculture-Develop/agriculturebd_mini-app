@@ -127,6 +127,7 @@ export async function postPublicGoodIdComment({
   params: API.postPublicGoodIdCommentParams;
   body: {
     comment: string;
+    reply_id:number;
   };
   options?: CustomRequestOptions;
 }) {

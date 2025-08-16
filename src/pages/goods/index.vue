@@ -52,7 +52,9 @@ const page = ref(1)
 const count = 5
 const pagingRef = ref()
 const { safeAreaInsets } = uni.getSystemInfoSync()
-
+onMounted(() => {
+  pagingRef.value?.reload()
+})
 // 请求商品数据（原逻辑不变）
 const queryList = async (pageNo: number, pageSize: number) => {
   try {

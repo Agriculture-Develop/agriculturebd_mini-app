@@ -56,13 +56,12 @@
           <view>上传封面图片</view>
           <view>
             <wd-upload
-              ref="uploader"
               :rules="[{ required: true, message: '请上传封面' }]"
               :limit="1"
+              name="file"
               v-model:file-list="coverList"
-              :action="uploadFileUrl.USER_AVATAR"
+              :action="uploadFileUrl.GOOD_FILES"
               @remove="handleRemove"
-              name="cover"
             ></wd-upload>
           </view>
         </view>
@@ -72,11 +71,10 @@
           <wd-upload
             multiple
             :limit="3"
+            name="file"
             v-model:file-list="fileList"
             :action="uploadFileUrl.GOOD_FILES"
-            :name="'files'"
             @remove="handleRemove"
-            @change="handleChange"
           ></wd-upload>
         </view>
         <view class="footer w-full">
@@ -133,6 +131,9 @@ const rules = {
 function handleChange({ fileList: files }) {
   fileList.value = files
   console.log('文件列表', fileList.value)
+  files.forEach((f) => {
+    console.log('真实接口返回:', f.response)
+  })
 }
 function handleRemove({ file }) {
   console.log('删除文件', file)

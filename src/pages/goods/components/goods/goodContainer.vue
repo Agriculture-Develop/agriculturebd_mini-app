@@ -1,69 +1,47 @@
 <template>
-  <view></view>
-  <view v-for="(item, index) in visibleList" :key="item.id">
-    <Goods :product="item" />
+  <view>
+    <view v-for="(item, index) in goodList" :key="item.id">
+      <Goods :product="item" />
+    </view>
   </view>
 </template>
 
 <script lang="ts" setup>
 import { useQuery } from '@tanstack/vue-query'
-import { getPublicGoodListQueryOptions } from '@/service/app'
+import { getPublicGoodListQueryOptions, getPublicGoodList, getPublicUserId } from '@/service/app'
 import Goods from './index.vue'
 import { IUserInfoVo } from '@/api/user.typing'
 import { getUserInfo } from '@/api/user'
-
-const { data: goodList, refetch } = useQuery(
-  getPublicGoodListQueryOptions({
-    params: { title: '', count: 5, page: 1 },
-  }),
-)
-
-const props = defineProps<{
-  showAll?: boolean // 可选参数，默认 false
-}>()
-const goods = computed(() => goodList.value?.data.list ?? [])
-
-// 用户ID列表计算属性（安全访问嵌套属性）
-const userIds = computed(() => goods.value.map((item) => item.userid?.toString()))
-
-const { data: usersData } = useQuery({
-  queryKey: ['users', userIds],
-  queryFn: async () => {
-    const ids = userIds.value
-    const responses = await Promise.all(ids.map((id) => getUserInfo(id)))
-    return responses.map((res) => res.data)
-  },
-  enabled: computed(() => userIds.value.length > 0),
-  staleTime: 5 * 60 * 1000,
-})
-// 4. 创建用户信息映射表
-const userMap = computed(() => {
-  if (!usersData.value) return {} // 避免 undefined
-  return usersData.value.reduce(
-    (map, user) => {
-      map[user.id] = user
-      return map
+const goodList = ref()
+const queryList = async (pageNo: number, pageSize: number) => {
+  const res = await getPublicGoodList({
+    params: {
+      title: '',
+      page: pageNo,
+      count: pageSize,
     },
-    {} as Record<string, IUserInfoVo>,
-  )
-})
+  })
 
-// 5. 正确合并数据
-const combinedList = computed(() => {
-  if (goods.value) {
-    return goods.value.map((item) => {
-      const user = userMap.value[item.userid.toString()]
-      return {
-        ...item, // 原始商品数据
-        nickname: user?.nickname,
-        avatar_path: user?.avatar_path,
-        role: user?.role,
-      }
-    })
-  }
-})
+  const goods = res.data?.list ?? []
+  const userIds = goods.map((g) => g.userid?.toString()).filter(Boolean)
 
-const visibleList = computed(() => {
-  return props.showAll ? combinedList.value : combinedList.value?.slice(0, 5)
-})
+  const userResponses = await Promise.all(userIds.map((id) => getPublicUserId({ params: { id } })))
+  const userMap: Record<string, IUserInfoVo> = {}
+
+  userResponses.forEach((res) => {
+    if (res?.data) userMap[res.data.id] = res.data
+  })
+
+  const merged = goods.map((item) => {
+    const user = userMap[item.userid?.toString()]
+    return {
+      ...item,
+      nickname: user?.nickname,
+      avatar_path: user?.avatar_path,
+      role: user?.role,
+    }
+  })
+  goodList.value = merged
+}
+queryList(1, 6)
 </script>

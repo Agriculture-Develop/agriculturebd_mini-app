@@ -1,6 +1,6 @@
 {
   "name": "unibest",
-  "appid": "H57F2ACE4",
+  "appid": "wx0e81701e64dca596",
   "description": "",
   "versionName": "1.0.0",
   "versionCode": "100",
@@ -83,7 +83,7 @@
   },
   "quickapp": {},
   "mp-weixin": {
-    "appid": "wxaf928d88430977b3",
+    "appid": "wx0e81701e64dca596",
     "setting": {
       "urlCheck": false,
       "ignoreDevUnusedFiles": false,

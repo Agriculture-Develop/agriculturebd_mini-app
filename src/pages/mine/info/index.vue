@@ -97,6 +97,8 @@ const tempFile = ref('')
 const handleSubmit = async () => {
   // 表单验证
   const valid = await formRef.value.validate()
+  console.log(valid)
+
   if (!valid) return
   //上传头像
   if (tempFile.value) {
@@ -136,7 +138,6 @@ const chooseImage = () => {
   })
 }
 //
-computed
 </script>
 
 <style lang="scss" scoped>

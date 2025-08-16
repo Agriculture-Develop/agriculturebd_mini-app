@@ -1,5 +1,5 @@
 export type IUserInfoVo = {
-  id: string
+  id: number
   phone: string
   nickname: string
   avatar_path: string

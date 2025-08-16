@@ -95,11 +95,12 @@ const itemId = ref('')
 onLoad((options) => {
   itemId.value = options.id // 从 options 中提取 id
   console.log(itemId.value, 'itemId')
+  run()
 })
 const { loading, error, data, run } = useRequest(
   () => getAdminNewsId({ params: { id: itemId.value } }),
   {
-    immediate: true,
+    immediate: false,
   },
 )
 

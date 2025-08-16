@@ -150,7 +150,7 @@ const userStore = useUserStore()
 // 登录表单数据
 const loginForm = ref({
   phone: '13250527308',
-  password: 'chen123456',
+  password: 'f123456',
   auth_code: '',
 })
 // 隐私协议勾选状态
