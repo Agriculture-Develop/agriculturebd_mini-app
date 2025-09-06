@@ -54,119 +54,103 @@ export default defineUniPages({
         text: '我的',
       },
     ],
-    pages: [
-      {
-        path: 'pages/index/index',
-        type: 'home',
-        style: {
-          navigationStyle: 'custom',
-        },
-      },
-      {
-        path: 'pages/index/demo',
-        type: 'home',
-        style: {
-          navigationStyle: 'custom',
-          navigationBarTitleText: '首页',
-        },
-      },
-      {
-        path: 'pages/about/about',
-        type: 'page',
-        style: {
-          navigationBarTitleText: '关于',
-          navigationStyle: 'custom',
-        },
-      },
-      {
-        path: 'pages/goods/index',
-        type: 'page',
-        style: {
-          navigationStyle: 'custom',
-          enablePullDownRefresh: false,
-        },
-      },
-      {
-        path: 'pages/login/index',
-        type: 'page',
-        style: {
-          navigationBarTitleText: '登录',
-          navigationStyle: 'custom',
-        },
-      },
-      {
-        path: 'pages/mine/demo',
-        type: 'page',
-        style: {
-          navigationBarTitleText: '我的',
-        },
-      },
-      {
-        path: 'pages/mine/index',
-        type: 'page',
-        style: {
-          navigationBarTitleText: '我的',
-        },
-      },
-      {
-        path: 'pages/news/details',
-        type: 'page',
-        style: {
-          navigationStyle: 'custom',
-        },
-      },
-      {
-        path: 'pages/news/index',
-        type: 'page',
-        style: {
-          navigationStyle: 'custom',
-          layout: 'default',
-        },
-      },
-      {
-        path: 'pages/goods/details/index',
-        type: 'page',
-        layout: 'default',
-        style: {
-          navigationBarTitleText: '',
-        },
-      },
-      {
-        path: 'pages/goods/publish/index',
-        type: 'page',
-        style: {
-          navigationBarTitleText: '发布',
-        },
-      },
-      {
-        path: 'pages/mine/about/index',
-        type: 'page',
-        style: {
-          navigationBarTitleText: '关于我们',
-        },
-      },
-      {
-        path: 'pages/mine/info/index',
-        type: 'page',
-        style: {
-          navigationBarTitleText: '个人资料',
-        },
-      },
-      {
-        path: 'pages/mine/password/index',
-        type: 'page',
-        style: {
-          navigationBarTitleText: '修改密码',
-        },
-      },
-      {
-        path: 'pages/mine/post/index',
-        type: 'page',
-        layout: 'default',
-        style: {
-          navigationBarTitleText: '我的发帖',
-        },
-      },
-    ],
   },
+  pages: [
+    {
+      path: 'pages/index/index',
+      type: 'home',
+      style: {
+        navigationStyle: 'custom',
+      },
+    },
+    {
+      path: 'pages/index/index',
+      type: 'home',
+      style: {
+        navigationStyle: 'custom',
+        navigationBarTitleText: '首页',
+      },
+    },
+    {
+      path: 'pages/goods/index',
+      type: 'page',
+      style: {
+        navigationStyle: 'custom',
+        enablePullDownRefresh: false,
+      },
+    },
+    {
+      path: 'pages/login/index',
+      type: 'page',
+      style: {
+        navigationBarTitleText: '登录',
+        navigationStyle: 'custom',
+      },
+    },
+    {
+      path: 'pages/mine/index',
+      type: 'page',
+      style: {
+        navigationBarTitleText: '我的',
+      },
+    },
+    {
+      path: 'pages/mine/index',
+      type: 'page',
+      style: {
+        navigationBarTitleText: '我的',
+      },
+    },
+    {
+      path: 'pages/news/details',
+      type: 'page',
+      style: {
+        navigationStyle: 'custom',
+      },
+    },
+    {
+      path: 'pages/news/index',
+      type: 'page',
+      style: {
+        navigationStyle: 'custom',
+      },
+    },
+    {
+      path: 'pages/goods/details/index',
+      type: 'page',
+      style: {
+        navigationBarTitleText: '',
+      },
+    },
+    {
+      path: 'pages/goods/publish/index',
+      type: 'page',
+      style: {
+        navigationBarTitleText: '发布',
+      },
+    },
+
+    {
+      path: 'pages/mine/info/index',
+      type: 'page',
+      style: {
+        navigationBarTitleText: '个人资料',
+      },
+    },
+    {
+      path: 'pages/mine/password/index',
+      type: 'page',
+      style: {
+        navigationBarTitleText: '修改密码',
+      },
+    },
+    {
+      path: 'pages/mine/post/index',
+      type: 'page',
+      layout: 'default',
+      style: {
+        navigationBarTitleText: '我的发帖',
+      },
+    },
+  ],
 })

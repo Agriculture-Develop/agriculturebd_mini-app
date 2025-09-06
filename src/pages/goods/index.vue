@@ -4,6 +4,7 @@
     navigationStyle: 'custom',
     enablePullDownRefresh: false, // 改为 false，由 z-paging 管理
   },
+  needLogin: true,
 }
 </route>
 
@@ -24,6 +25,7 @@
       use-page-scroll
       show-refresh-loading
       i18n="zh-CN"
+      auto
     >
       <template v-if="showList.length > 0">
         <view v-for="(item, index) in showList" :key="item.id">
@@ -55,6 +57,7 @@ const { safeAreaInsets } = uni.getSystemInfoSync()
 onMounted(() => {
   pagingRef.value?.reload()
 })
+
 // 请求商品数据（原逻辑不变）
 const queryList = async (pageNo: number, pageSize: number) => {
   try {

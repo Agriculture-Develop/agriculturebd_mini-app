@@ -108,6 +108,7 @@ export async function getPublicGoodIdComment({
         like: string;
         created_at: string;
         userid: string;
+        reply_id: string;
       }[];
     };
   }>(`/public/good/${param0}/comment`, {

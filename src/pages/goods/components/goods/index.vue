@@ -33,7 +33,7 @@
           @click.stop
           class="icon text-gray-300 text-xl grid grid-cols-3 justify-items-center gap-2"
         >
-          <wd-badge modelValue="1" type="primary">
+          <wd-badge :modelValue="commentTotal" type="primary">
             <i class="i-ep-comment"></i>
           </wd-badge>
           <i class="i-ep-star" :class="{ active: isActive[0] }" @click="toggleIcon(0)"></i>
@@ -45,9 +45,20 @@
 </template>
 
 <script lang="ts" setup>
+import { getPublicGoodIdComment } from '@/service/app'
 import { avatar, goodImg } from '@/utils/imges'
 import { formatTime } from '@/utils/time'
+const commentTotal = ref(0)
 
+onMounted(async () => {
+  const id = props.product.id
+  commentTotal.value = await getComment(id)
+})
+const getComment = async (id) => {
+  const res = await getPublicGoodIdComment({ params: { id: id } })
+  console.log(res.data.total)
+  return res.data.total
+}
 type Product = {
   id: number
   userid: number

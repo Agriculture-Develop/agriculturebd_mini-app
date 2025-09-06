@@ -9,21 +9,25 @@
 <template>
   <view class="space-y-4">
     <!-- 弹出框 -->
-    <wd-popup v-model="showPopup" position="bottom" custom-style="background: #fff;height:200px">
-      <wd-textarea
-        v-model="inputValue"
-        placeholder="写下你的评论..."
-        min-h-3xl
-        auto-height
-        border
-        :maxlength="100"
-        size="large"
-      />
-      <view class="flex justify-end mt-2">
+    <wd-popup
+      v-model="showPopup"
+      position="bottom"
+      custom-style="background: #fff;height:200px"
+      class="flex"
+    >
+      <view class="flex items-center gap-2 p-2">
+        <wd-textarea
+          v-model="inputValue"
+          placeholder="写下你的评论..."
+          auto-height
+          border
+          :maxlength="100"
+          size="large"
+          custom-class="w-80vw"
+        />
         <wd-button size="small" type="primary" @click="handleComment">发送</wd-button>
       </view>
     </wd-popup>
-    {{ good.id }}
     <wd-swiper :list="good.files_url" v-model:current="current" class="p-5" />
 
     <view class="content w-95vw m-a space-y-4">
@@ -39,7 +43,7 @@
       </view>
       <wd-divider></wd-divider>
       <view class="commentContainer space-y-5">
-        <view>共{{ comment.total }}条评论</view>
+        <view>共{{ commentTotal }}条评论</view>
         <view class="flex items-center">
           <!-- <wd-skeleton :row-col="[{ size: '70rpx', type: 'circle' }]" /> -->
           <wd-img
@@ -65,46 +69,15 @@
         </view>
         <wd-divider></wd-divider>
         <!-- 评论 -->
-        <view class="publish" v-for="item in comment.list" :key="item.id">
-          <view class="father">
-            <view class="flex title gap-x-4">
-              <view class="self-start flex-shrink-0">
-                <wd-img :src="item.avatar" width="70rpx" height="70rpx" radius="50%" />
-              </view>
-              <view class="flex flex-col">
-                <view class="name text-sm">{{ item.publisher_name }}</view>
-                <view class="time text-xs text-gray-400">
-                  {{ relTime(item.created_at) }}
-                </view>
-                <view>
-                  <view class="flex">
-                    <view class="comment text-base w-70vw whitespace-pre-line break-words">
-                      {{ item.comment }}
-                    </view>
-                    <view><i class="text-gray-300 ml-3 i-uiw-heart-on"></i></view>
-                  </view>
-                  <view class="bottom flex gap-x-5">
-                    <wd-button
-                      @click="() => (showPopup = !showPopup)"
-                      size="small"
-                      type="text"
-                      class=""
-                    >
-                      回复
-                    </wd-button>
-                    <wd-button
-                      size="small"
-                      type="text"
-                      v-if="item.user_id === userInfo.id"
-                      @click="deleteComment(item.id)"
-                    >
-                      删除
-                    </wd-button>
-                  </view>
-                </view>
-              </view>
-            </view>
-          </view>
+        <view>
+          <CommentItem
+            v-for="item in comment"
+            :key="item.id"
+            :item="item"
+            :level="0"
+            @delete="deleteComment($event)"
+            @reply="openReplyPopup($event)"
+          ></CommentItem>
         </view>
       </view>
     </view>
@@ -115,85 +88,129 @@
 
 <script lang="ts" setup>
 import {
-  getPublicGoodIdCommentQueryOptions,
-  getPublicGoodIdQueryOptions,
   getPublicGoodId,
   getPublicGoodIdComment,
   postPublicGoodIdComment,
   deletePublicGoodCommentId,
+  getPublicGoodCommentId,
 } from '@/service/app'
 import { useQuery } from '@tanstack/vue-query'
 import { formatTime, relTime } from '@/utils/time'
 import { useUserStore } from '@/store'
 import { avatar, goodImg } from '@/utils/imges'
 import { useMessage } from 'wot-design-uni'
+import CommentItem from '@/pages/goods/components/comment.vue'
 
 const message = useMessage()
 const showPopup = ref(false)
 const userStore = useUserStore()
 const current = ref<number>(0)
-const userInfo = uni.getStorageSync('userInfo')
 const inputValue = ref('')
 const itemId = ref('0')
+const replyId = ref(-1) // 回复的评论ID，默认-1表示不是回复
 const good = ref()
 const comment = ref()
+const commentTotal = ref(0)
 onLoad((options) => {
   itemId.value = options.id // 从 options 中提取 id
   getPublicGood()
   getComment()
 })
 
-// const { data: commentList, refetch } = useQuery({
-//   ...getPublicGoodIdCommentQueryOptions({
-//     params: { id: itemId as any },
-//   }),
-// })
-// const { data: good, refetch: goodRefetch } = useQuery({
-//   ...getPublicGoodIdQueryOptions({
-//     params: { id: itemId as any },
-//   }),
-//   enabled: !!itemId,
-// })
 const getPublicGood = async () => {
   const res = await getPublicGoodId({ params: { id: itemId.value } })
   const new_files = res.data.files_url.map((img) => goodImg(img))
   good.value = { ...res.data, files_url: new_files }
 }
+//打开pop
 
-//获得详细评论
-
+const openReplyPopup = (id: number) => {
+  replyId.value = id // 记住要回复哪条评论
+  console.log(replyId.value)
+  showPopup.value = true // 打开弹窗
+}
+//查看评论详情
+const getCommentItem = async (id) => {
+  if (!id || id === -1) return '' // 防止无效 id
+  const res = await getPublicGoodCommentId({
+    params: { id },
+  })
+  return res.data.publisher_name
+}
 //获得评论
 const getComment = async () => {
   const res = await getPublicGoodIdComment({ params: { id: itemId.value } })
   console.log(res, 'ressss')
 
-  const new_list = res.data.list.map((item) => {
-    return {
-      ...item,
-      avatar: avatar(item.avatar),
-    }
-  })
+  const new_list = await Promise.all(
+    res.data.list.map(async (item) => {
+      return {
+        ...item,
+        reply_name: await getCommentItem(item.reply_id),
+      }
+    }),
+  )
+  commentTotal.value = res.data.total
   comment.value = {
     total: res.data.total,
     list: [...new_list],
   }
   console.log(comment.value)
+  comment.value = buildCommentTree(comment.value.list)
+  console.log(comment.value, 'tree')
 }
 //新建评论
-const handleComment = async (id: string) => {
+const handleComment = async () => {
   if (!inputValue.value.trim()) return
+
   const res = await postPublicGoodIdComment({
-    body: { comment: inputValue.value, reply_id: Number(id) | -1 },
+    body: { comment: inputValue.value, reply_id: Number(replyId.value) },
     params: { id: itemId.value },
   })
   console.log(res)
   inputValue.value = ''
   showPopup.value = false // 发送后关闭弹窗
-
   getComment()
 }
+
+//整合评论
+function buildCommentTree(list) {
+  const map: Record<number, any> = {}
+  const tree: any[] = []
+
+  // 建立映射表
+  list.forEach((item) => {
+    map[item.id] = { ...item, children: [] }
+  })
+
+  // 组装树结构
+  list.forEach((item) => {
+    if (item.reply_id === -1) {
+      tree.push(map[item.id])
+    } else {
+      if (map[item.reply_id]) {
+        map[item.reply_id].children.push(map[item.id])
+      }
+    }
+  })
+
+  // 递归删除空 children
+  function clean(node: any) {
+    if (node.children && node.children.length === 0) {
+      delete node.children
+    } else if (node.children) {
+      node.children.forEach(clean)
+    }
+  }
+  tree.forEach(clean)
+
+  return tree
+}
+
 //删除评论
 const deleteComment = async (id) => {
+  console.log(id)
+
   const ok = await confirm()
   if (!ok) return
   const res = await deletePublicGoodCommentId({
@@ -203,7 +220,6 @@ const deleteComment = async (id) => {
   getComment()
 }
 //获取评论详情
-const getCommentId = (id) => {}
 //弹框
 async function confirm() {
   try {

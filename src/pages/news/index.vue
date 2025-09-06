@@ -2,14 +2,14 @@
 {
   style: {
     navigationStyle: 'custom',
-    layout: 'default',
   },
 }
 </route>
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { getAdminNewsListQueryOptions } from '@/service/app'
+import { getAdminNewsListQueryOptions, getAdminNewsCategoriesList } from '@/service/app'
 import { useQuery } from '@tanstack/vue-query'
+import { newsImg } from '@/utils/imges'
 
 // 使用相对路径导入图片
 const defaultImage = '/static/images/lingmeng.jpg'
@@ -20,23 +20,24 @@ interface SelectEvent {
 }
 
 const { safeAreaInsets } = uni.getSystemInfoSync()
-// const { loading, error, data, run } = useRequest(
-//   () => getAdminNewsList({ params: { author: 'admin' } }),
-//   {
-//     immediate: true,
-//   },
-// )
+
 const { data: newsList } = useQuery(getAdminNewsListQueryOptions({ params: { author: '' } }))
 // 修改分类数据结构为 select-picker 需要的格式
 
-const categoryColumns = [
-  { value: '全部', label: '全部' },
-  { value: '产业动态', label: '产业动态' },
-  { value: '科技创新', label: '科技创新' },
-  { value: '电商发展', label: '电商发展' },
-  { value: '品牌建设', label: '品牌建设' },
-  { value: '政策法规', label: '政策法规' },
-]
+const getCategory = async () => {
+  const res = await getAdminNewsCategoriesList({})
+  if (res?.data.list) {
+    categoryColumns.value.unshift({ value: '全部', label: '全部' })
+    res.data.list.forEach((category) => {
+      categoryColumns.value.push({ value: category.name, label: category.name })
+    })
+  }
+  console.log(categoryColumns, 'categoryColumns')
+
+  return categoryColumns
+}
+getCategory()
+const categoryColumns = ref<any[]>([])
 
 const currentPage = ref(1)
 const pageSize = ref(6)
@@ -123,7 +124,7 @@ const handleDetailsClick = (id: string) => {
         <view class="" @click="handleDetailsClick(news.id.toString())">
           <view class="flex gap-1 items-center">
             <image
-              :src="news.cover_url"
+              :src="newsImg(news.cover_url)"
               class="w-24 h-24 rounded-lg object-cover flex-shrink-0"
               mode="aspectFill"
             />
@@ -143,7 +144,7 @@ const handleDetailsClick = (id: string) => {
               <view
                 class="text-gray-600 text-sm mt-1 text-ellipsis line-clamp-3 overflow-hidden w-50"
               >
-                {{ news.content }}
+                {{ news.abstract }}
               </view>
             </view>
           </view>

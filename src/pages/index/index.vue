@@ -1,9 +1,10 @@
 <!-- 使用 type="home" 属性设置首页，其他页面不需要设置，默认为page；推荐使用json5，更强大，且允许注释 -->
-<route lang="json5" type="home">
+<route lang="json5">
 {
   style: {
     navigationStyle: 'custom',
   },
+  needLogin: true,
 }
 </route>
 <template>
@@ -21,7 +22,6 @@
     <!-- <view class="swiper mt-(-3)">
       <wd-swiper :list="swiperList" autoplay v-model:current="current"></wd-swiper>
     </view> -->
-    {{ tabs }}
 
     <view class="tab-container relative">
       <view class="absolute left-0 translate-y--50% top-(21px) z-1 text-green text-2xl">
@@ -65,16 +65,13 @@
 </template>
 
 <script lang="ts" setup>
-import { IUserInfoVo } from '@/api/login.typings'
 import goodContainer from '../goods/components/goods/goodContainer.vue'
 import { getAdminNewsList } from '@/service/app'
 
 const current = ref<number>(0)
 const swiperList = ref(['/static/images/lingmeng.jpg', '/static/images/lingmeng.jpg'])
 const tab = ref<number>(0)
-defineOptions({
-  name: 'Home',
-})
+
 onMounted(() => {
   doRequire()
 })

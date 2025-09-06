@@ -11,8 +11,9 @@ import { needLoginPages as _needLoginPages, getNeedLoginPages, getLastPage } fro
 const loginRoute = '/pages/login/index'
 
 const isLogined = () => {
-  const userStore = useUserStore()
-  return !!userStore.userInfo.nickname
+  const token = uni.getStorageSync('token')
+  console.log(!!token, 'tolk')
+  return !!token
 }
 
 const isDev = import.meta.env.DEV
@@ -22,7 +23,7 @@ const navigateToInterceptor = {
   // 注意，这里的url是 '/' 开头的，如 '/pages/index/index'，跟 'pages.json' 里面的 path 不同
   // 增加对相对路径的处理，BY 网友 @ideal
   invoke({ url }: { url: string }) {
-    // console.log(url) // /pages/route-interceptor/index?name=feige&age=30
+    console.log(url) // /pages/route-interceptor/index?name=feige&age=30
     let path = url.split('?')[0]
 
     // 处理相对路径
@@ -37,6 +38,7 @@ const navigateToInterceptor = {
     // 为了防止开发时出现BUG，这里每次都获取一下。生产环境可以移到函数外，性能更好
     if (isDev) {
       needLoginPages = getNeedLoginPages()
+      console.log(needLoginPages, 'needlogin')
     } else {
       needLoginPages = _needLoginPages
     }
@@ -45,6 +47,8 @@ const navigateToInterceptor = {
       return true
     }
     const hasLogin = isLogined()
+    console.log(hasLogin, 'login')
+
     if (hasLogin) {
       return true
     }

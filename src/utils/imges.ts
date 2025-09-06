@@ -7,3 +7,6 @@ export const avatar = (filename) => {
 export const goodImg = (filename) => {
   return filename ? `${baseUrl}/files/good/${filename}` : ''
 }
+export const newsImg = (filename) => {
+  return filename ? `${baseUrl}/files/news/${filename}` : ''
+}

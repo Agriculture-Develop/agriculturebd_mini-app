@@ -12,6 +12,9 @@ import { getPublicGoodListQueryOptions, getPublicGoodList, getPublicUserId } fro
 import Goods from './index.vue'
 import { IUserInfoVo } from '@/api/user.typing'
 import { getUserInfo } from '@/api/user'
+onLoad(() => {
+  queryList(1, 6)
+})
 const goodList = ref()
 const queryList = async (pageNo: number, pageSize: number) => {
   const res = await getPublicGoodList({
@@ -43,5 +46,4 @@ const queryList = async (pageNo: number, pageSize: number) => {
   })
   goodList.value = merged
 }
-queryList(1, 6)
 </script>

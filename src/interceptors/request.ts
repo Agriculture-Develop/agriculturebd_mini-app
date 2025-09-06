@@ -51,7 +51,6 @@ const httpInterceptor = {
       ...options.header,
     }
     // 3. 添加 token 请求头标识
-    const userStore = useUserStore()
     const token = uni.getStorageSync('token')
     // const { token } = userStore.userInfo as unknown as IUserInfo
 
