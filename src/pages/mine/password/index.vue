@@ -53,7 +53,9 @@
                 class="form-input"
               >
                 <template #suffix>
-                  <wd-button @click="getCode" size="small">获取验证码</wd-button>
+                  <wd-button @click="getCode" size="small" :disabled="Boolean(timer)">
+                    {{ !timer ? '获取验证码' : `请在${countdown}秒后重新获取` }}
+                  </wd-button>
                 </template>
               </wd-input>
             </view>
@@ -81,6 +83,8 @@ const { success: showSuccess, error: showError } = useToast()
 const formRef = ref()
 const phoneRegex = /^1[3-9]\d{9}$/
 const alphaNumRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,20}$/
+const countdown = ref(0)
+const timer = ref<ReturnType<typeof setInterval> | null>(null)
 // 用户信息
 
 // 表单数据
@@ -89,6 +93,16 @@ const formData = ref({
   password: '',
   auth_code: '',
 })
+const startCountdown = () => {
+  countdown.value = 60
+  timer.value = setInterval(() => {
+    countdown.value--
+    if (countdown.value <= 0) {
+      clearInterval(timer.value as number)
+      timer.value = null
+    }
+  }, 1000)
+}
 //获取验证码
 const getCode = async () => {
   if (!phoneRegex.test(formData.value.phone)) {
@@ -96,6 +110,7 @@ const getCode = async () => {
     return
   }
   const res = await postAuthCode({ body: { phone: formData.value.phone } })
+  startCountdown()
 }
 // 提交表单
 const handleSubmit = async () => {

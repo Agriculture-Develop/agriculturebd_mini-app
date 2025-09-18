@@ -21,7 +21,7 @@ interface SelectEvent {
 
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
-const { data: newsList } = useQuery(getAdminNewsListQueryOptions({ params: { author: '' } }))
+const { data: newsList } = useQuery(getAdminNewsListQueryOptions({ params: { status: '已发布' } }))
 // 修改分类数据结构为 select-picker 需要的格式
 
 const getCategory = async () => {

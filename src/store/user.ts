@@ -14,18 +14,20 @@ import {
   postAuthRegister,
   postAuthCode,
 } from '@/service/app'
+import { setToken } from '@/utils/auth'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { toast } from '@/utils/toast'
 import { IUserInfoVo } from '@/api/login.typings'
-
+import { useToast } from 'wot-design-uni'
+// const { success: showSuccess, error: showError } = useToast()
 // 初始化状态
 const userInfoState: IUserInfoVo = {
   nickname: '微信用户',
   avatar_path: '/static/images/default-avatar.png',
   role: '农户',
 }
-
+const expiresIn = 2 * 23 * 60
 export const useUserStore = defineStore(
   'user',
   () => {
@@ -58,7 +60,8 @@ export const useUserStore = defineStore(
       // const res = await _login(credentials)
       const res = await postAuthLoginPwd({ body: credentials })
 
-      uni.setStorageSync('token', res.data.token)
+      // uni.setStorageSync('token', res.data.token)
+      setToken(res.data.token, expiresIn)
       console.log('登录信息', res)
       // toast.success('登录成功')
       getUserInfo()
@@ -68,15 +71,18 @@ export const useUserStore = defineStore(
       // const res = await _login(credentials)
       const res = await postAuthLoginCode({ body: credentials })
       console.log('登录信息', res)
+
       // toast.success('登录成功')
-      uni.setStorageSync('token', res.data.token)
+      // uni.setStorageSync('token', res.data.token)
+      if (res.code === 200) setToken(res.data.token, expiresIn)
+
       getUserInfo()
       return res
     }
     //注册
     const register = async (pas) => {
       const res = await postAuthRegister({ body: pas })
-      toast.success('注册成功，请登录')
+      // toast.success('注册成功，请登录')
     }
 
     /**

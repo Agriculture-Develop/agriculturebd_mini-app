@@ -119,7 +119,8 @@ const handleSubmit = async () => {
   }
   console.log('提交表单', formData.value)
   //修改用户信息
-  await putPublicUser({ body: formData.value })
+  const res = await putPublicUser({ body: formData.value })
+
   userStore.getUserInfo()
   toast.success('修改完成')
 }

@@ -57,6 +57,21 @@ const httpInterceptor = {
     if (token) {
       options.header.Authorization = `Bearer ${token}`
     }
+    //token过期处理
+    const originalComplete = options.complete
+    options.complete = function (res) {
+      if ((res as UniApp.RequestSuccessCallbackResult).statusCode === 1010) {
+        // token 过期或者无效
+        uni.removeStorageSync('token')
+        uni.showToast({
+          title: '登录已过期，请重新登录',
+          icon: 'none',
+        })
+        // 跳转登录页
+        uni.reLaunch({ url: '/pages/login/index' })
+      }
+      if (originalComplete) originalComplete(res)
+    }
   },
 }
 

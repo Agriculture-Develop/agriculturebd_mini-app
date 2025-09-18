@@ -106,9 +106,9 @@ export async function getPublicGoodIdComment({
         comment: string;
         role: string;
         like: string;
+        user_id: number;
+        reply_id: number;
         created_at: string;
-        userid: string;
-        reply_id: string;
       }[];
     };
   }>(`/public/good/${param0}/comment`, {
@@ -128,7 +128,7 @@ export async function postPublicGoodIdComment({
   params: API.postPublicGoodIdCommentParams;
   body: {
     comment: string;
-    reply_id:number;
+    reply_id: number;
   };
   options?: CustomRequestOptions;
 }) {
@@ -169,6 +169,8 @@ export async function getPublicGoodCommentId({
       comment: string;
       role: string;
       like: string;
+      user_id: number;
+      reply_id: number;
       created_at: string;
     };
   }>(`/public/good/comment/${param0}`, {

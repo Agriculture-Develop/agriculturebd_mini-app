@@ -87,7 +87,16 @@ export async function getAdminNewsCategoriesList({
   return request<{
     code: number;
     msg: string;
-    data: { total: number; list: { name: string; description: string }[] };
+    data: {
+      total: number;
+      list: {
+        name: string;
+        description: string;
+        id: number;
+        sort_order: string;
+        created_at: string;
+      }[];
+    };
   }>('/admin/news/categories/list', {
     method: 'GET',
     ...(options || {}),

@@ -57,7 +57,9 @@
             required
           >
             <template #suffix>
-              <wd-button @click="getCode">获取验证码</wd-button>
+              <wd-button @click="getCode" :disabled="Boolean(timer)">
+                {{ !timer ? '获取验证码' : `请在${countdown}秒后重新获取` }}
+              </wd-button>
             </template>
           </wd-input>
           <view class="input-bottom-line"></view>
@@ -143,6 +145,8 @@ const loginMode = ref(false)
 const registerIf = ref(false)
 const phoneRegex = /^1[3-9]\d{9}$/
 const alphaNumRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,20}$/
+const countdown = ref(0)
+const timer = ref<ReturnType<typeof setInterval> | null>(null)
 // 初始化store
 const userStore = useUserStore()
 // 路由位置
@@ -158,6 +162,16 @@ const agreePrivacy = ref(true)
 
 // 页面加载完毕时触发
 //注册
+const startCountdown = () => {
+  countdown.value = 60
+  timer.value = setInterval(() => {
+    countdown.value--
+    if (countdown.value <= 0) {
+      clearInterval(timer.value as number)
+      timer.value = null
+    }
+  }, 1000)
+}
 const handleAccountRegister = async () => {
   if (!phoneRegex.test(loginForm.value.phone)) {
     showError('请输入正确的手机号')
@@ -177,8 +191,7 @@ const handleAccountRegister = async () => {
 
   if (res.code !== 200) {
     showError(res.msg)
-  }
-  showSuccess('注册成功，请登录')
+  } else showSuccess('注册成功，请登录')
   console.log(res)
 }
 //获取验证码
@@ -188,6 +201,7 @@ const getCode = async () => {
     return
   }
   const res = await postAuthCode({ body: { phone: loginForm.value.phone } })
+  startCountdown()
   console.log(res)
 }
 //登录
@@ -247,9 +261,9 @@ const handleAccountCode = async () => {
   // 执行登录
 
   const res = await userStore.codeLogin(loginForm.value)
-
   if (res.code !== 200) {
     showError(res.msg || '登录失败')
+    console.log(res.msg)
     return
   }
   // 跳转到首页或重定向页面

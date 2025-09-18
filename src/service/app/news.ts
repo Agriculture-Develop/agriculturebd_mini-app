@@ -8,57 +8,30 @@ import * as API from './types';
 /** 提交新闻 POST /admin/news */
 export async function postAdminNews({
   body,
-  cover,
-  files,
   options,
 }: {
   body: {
     title: string;
     category_id: number;
     content: string;
-    /** 只能是(draft / reviewing) */
+    /** 只能填审核中和直接发布 */
     status: string;
+    cover_url: string;
+    /** 只能填 新闻和政策 */
+    types?: string;
+    files_url?: string[];
     abstract?: string;
-    type?: string;
     keyword?: string[];
     source?: string;
   };
-  cover?: File;
-  files?: File;
   options?: CustomRequestOptions;
 }) {
-  const formData = new FormData();
-
-  if (cover) {
-    formData.append('cover', cover);
-  }
-
-  if (files) {
-    formData.append('files', files);
-  }
-
-  Object.keys(body).forEach((ele) => {
-    const item = (body as { [key: string]: any })[ele];
-
-    if (item !== undefined && item !== null) {
-      if (typeof item === 'object' && !(item instanceof File)) {
-        if (item instanceof Array) {
-          item.forEach((f) => formData.append(ele, f || ''));
-        } else {
-          formData.append(ele, JSON.stringify(item));
-        }
-      } else {
-        formData.append(ele, item);
-      }
-    }
-  });
-
   return request<{ code: number; msg: string }>('/admin/news', {
     method: 'POST',
     headers: {
-      'Content-Type': 'multipart/form-data',
+      'Content-Type': 'application/json',
     },
-    data: formData,
+    data: body,
     ...(options || {}),
   });
 }
@@ -104,61 +77,33 @@ export async function getAdminNewsId({
 export async function putAdminNewsId({
   params,
   body,
-  cover,
-  files,
   options,
 }: {
   // 叠加生成的Param类型 (非body参数openapi默认没有生成对象)
   params: API.putAdminNewsIdParams;
   body: {
     title: string;
-    category_id: number;
+    category_id: string;
     content: string;
-    /** 只能是(draft / reviewing) */
     status: string;
-    abstract?: string;
-    type?: string;
-    keyword?: unknown[];
-    source?: string;
+    cover_trl: string;
+    files: string[];
+    abstract: string;
+    types: string;
+    keyword: string[];
+    source: string;
   };
-  cover?: File;
-  files?: File;
   options?: CustomRequestOptions;
 }) {
   const { id: param0, ...queryParams } = params;
-  const formData = new FormData();
-
-  if (cover) {
-    formData.append('cover', cover);
-  }
-
-  if (files) {
-    formData.append('files', files);
-  }
-
-  Object.keys(body).forEach((ele) => {
-    const item = (body as { [key: string]: any })[ele];
-
-    if (item !== undefined && item !== null) {
-      if (typeof item === 'object' && !(item instanceof File)) {
-        if (item instanceof Array) {
-          item.forEach((f) => formData.append(ele, f || ''));
-        } else {
-          formData.append(ele, JSON.stringify(item));
-        }
-      } else {
-        formData.append(ele, item);
-      }
-    }
-  });
 
   return request<{ code: number; msg: string }>(`/admin/news/${param0}`, {
     method: 'PUT',
     headers: {
-      'Content-Type': 'multipart/form-data',
+      'Content-Type': 'application/json',
     },
     params: { ...queryParams },
-    data: formData,
+    data: body,
     ...(options || {}),
   });
 }
@@ -205,10 +150,10 @@ export async function getAdminNewsList({
         source?: string;
         content?: string;
         cover_url?: string;
-        files_url?: null;
+        files_url?: string[];
         status?: string;
         author?: string;
-        type?: '新闻' | '政策';
+        type?: string;
         created_at?: string;
         updated_at?: string;
       }[];

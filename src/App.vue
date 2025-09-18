@@ -1,19 +1,29 @@
 <script setup lang="ts">
 import { onLaunch, onShow, onHide } from '@dcloudio/uni-app'
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only'
-const token = uni.getStorageSync('token')
-if (!token) {
-  // 没登录跳转登录页
-  uni.reLaunch({ url: '/pages/login/index' })
-} else {
-  // 已登录跳首页或保持当前页
-  uni.reLaunch({ url: '/pages/index/index' })
-}
+import { checkToken } from './utils/auth'
+
 onLaunch(() => {
-  console.log('App Launch')
+  // const token = uni.getStorageSync('token')
+
+  // if (!token || token == undefined) {
+  //   // 未登录 → 跳转登录页
+  //   uni.reLaunch({ url: '/pages/login/index' })
+  // } else {
+  //   // 已登录 → 跳首页
+  //   uni.reLaunch({ url: '/pages/index/index' })
+  // }
+
+  checkToken()
+
+  // console.log('App Launch, token:', token)
 })
+
 onShow(() => {
-  console.log('App Show')
+  const token = uni.getStorageSync('token')
+  if (!token) {
+    uni.reLaunch({ url: '/pages/login/index' })
+  }
 })
 onHide(() => {
   console.log('App Hide')
