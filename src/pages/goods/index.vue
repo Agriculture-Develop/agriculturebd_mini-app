@@ -50,12 +50,16 @@ const keyword = ref('')
 const hasSearched = ref(false)
 const combinedList = ref<any[]>([])
 const searchResult = ref<any[]>([])
-const page = ref(1)
-const count = 5
+
 const pagingRef = ref()
 const { safeAreaInsets } = uni.getSystemInfoSync()
 onMounted(() => {
   pagingRef.value?.reload()
+  queryList(1, 3)
+})
+onShow(() => {
+  pagingRef.value?.reload()
+  queryList(1, 3)
 })
 
 // 请求商品数据（原逻辑不变）

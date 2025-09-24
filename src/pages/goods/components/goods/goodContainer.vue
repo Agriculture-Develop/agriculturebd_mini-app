@@ -1,22 +1,21 @@
 <template>
   <view>
     <view v-for="(item, index) in goodList" :key="item.id">
-      <Goods :product="item" />
+      <Goods :product="item" :delete="isDelete" />
     </view>
   </view>
 </template>
 
 <script lang="ts" setup>
-import { useQuery } from '@tanstack/vue-query'
-import { getPublicGoodListQueryOptions, getPublicGoodList, getPublicUserId } from '@/service/app'
+import { getPublicGoodList, getPublicUserId } from '@/service/app'
 import Goods from './index.vue'
 import { IUserInfoVo } from '@/api/user.typing'
-import { getUserInfo } from '@/api/user'
-onLoad(() => {
+onMounted(() => {
   queryList(1, 6)
 })
 const goodList = ref()
-const queryList = async (pageNo: number, pageSize: number) => {
+const isDelete = ref(false)
+const queryList = async (pageNo: number, pageSize: number, id?) => {
   const res = await getPublicGoodList({
     params: {
       title: '',
@@ -24,10 +23,10 @@ const queryList = async (pageNo: number, pageSize: number) => {
       count: pageSize,
     },
   })
+  console.log(res)
 
   const goods = res.data?.list ?? []
   const userIds = goods.map((g) => g.userid?.toString()).filter(Boolean)
-
   const userResponses = await Promise.all(userIds.map((id) => getPublicUserId({ params: { id } })))
   const userMap: Record<string, IUserInfoVo> = {}
 
@@ -44,6 +43,13 @@ const queryList = async (pageNo: number, pageSize: number) => {
       role: user?.role,
     }
   })
-  goodList.value = merged
+  if (id) {
+    isDelete.value = true
+    goodList.value = merged.filter((i) => i.userid == id)
+    return
+  } else goodList.value = merged
 }
+defineExpose({
+  queryList,
+})
 </script>

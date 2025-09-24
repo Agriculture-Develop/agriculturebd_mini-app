@@ -20,7 +20,7 @@
         />
         <wd-textarea
           v-model="model.content"
-          placeholder="value"
+          placeholder="请输入内容"
           :maxlength="120"
           clearable
           show-word-limit
@@ -33,7 +33,7 @@
             prop="tag_name"
             clearable
             v-model="model.tag_name"
-            placeholder="请输入名称"
+            placeholder="香蕉"
           />
           <wd-input
             label="价格"
@@ -41,7 +41,7 @@
             prop="tag_price"
             clearable
             v-model="model.tag_price"
-            placeholder="价格"
+            placeholder="3.5元/斤"
           />
           <wd-input
             label="数量"
@@ -49,7 +49,7 @@
             prop="tag_weigh"
             clearable
             v-model="model.tag_weigh"
-            placeholder="数量"
+            placeholder="10斤"
           />
         </wd-cell-group>
         <view class="flex items-center gap-x-4">
@@ -114,6 +114,7 @@ const model = reactive<{
   cover: '',
   files: [],
 })
+
 const fileList = ref<UploadFile[]>([])
 const coverList = ref<UploadFile[]>([])
 
@@ -145,6 +146,18 @@ function handleRemove({ file }) {
     console.log('删除成功', res)
   })
 }
+const reset = () => {
+  model.tag_name = ''
+  model.tag_weigh = ''
+  model.tag_price = ''
+  model.title = ''
+  model.content = ''
+  model.cover = ''
+  model.files = []
+  coverList.value = []
+  fileList.value = []
+}
+
 async function handleSubmit() {
   form.value
     .validate()
@@ -172,9 +185,11 @@ async function handleSubmit() {
 
         await postPublicGood({ body: model })
         console.log('提交数据', model)
+
         showSuccess({
           msg: '发布成功',
         })
+        reset()
         // uni.switchTab({ url: '/pages/index/index' })
       }
     })

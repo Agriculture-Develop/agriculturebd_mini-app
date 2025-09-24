@@ -7,8 +7,8 @@
 </route>
 
 <template>
-  {{ JSON.stringify(userStore.userInfo) }}
-  {{ formData }}
+  <!-- {{ JSON.stringify(userStore.userInfo) }} -->
+  <!-- {{ formData }} -->
   <view class="profile-info-container">
     <view class="profile-card">
       <view class="form-wrapper">

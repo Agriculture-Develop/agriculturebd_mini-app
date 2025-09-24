@@ -22,7 +22,7 @@ onLaunch(() => {
 onShow(() => {
   const token = uni.getStorageSync('token')
   if (!token) {
-    uni.reLaunch({ url: '/pages/login/index' })
+    // uni.reLaunch({ url: '/pages/login/index' })
   }
 })
 onHide(() => {
@@ -32,6 +32,9 @@ onHide(() => {
 
 <style lang="scss">
 /* stylelint-disable selector-type-no-unknown */
+body {
+  background-color: antiquewhite;
+}
 button::after {
   border: none;
 }

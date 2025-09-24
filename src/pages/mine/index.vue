@@ -9,20 +9,23 @@
 <template>
   <view class="profile-container">
     <!-- 用户信息区域 -->
-    <view class="user-info-section gap-4">
+    <view class="user-info-section gap-4" v-if="hasLogin">
       <view>
         <wd-img
+          custom-class=""
           :src="avatar(userStore.userInfo.avatar_path)"
-          width="80px"
-          height="80px"
+          width="70px"
+          height="70px"
           radius="50%"
           mode="aspectFill"
         ></wd-img>
       </view>
-      <view class="font-bold line-height-15">{{ userStore.userInfo.nickname }}</view>
-      <view class="font-bold line-height-15">{{ userStore.userInfo.role }}</view>
+      <view class="font-bold line-height-15">昵称：{{ userStore.userInfo.nickname }}</view>
+      <view class="font-bold line-height-15">角色：{{ userStore.userInfo.role }}</view>
     </view>
-
+    <view class="user-info-section gap-4 min-h-15 flex justify-center font-bold text-10" v-else>
+      用户未登录
+    </view>
     <!-- 功能区块 -->
     <view class="function-section">
       <view class="cell-group">

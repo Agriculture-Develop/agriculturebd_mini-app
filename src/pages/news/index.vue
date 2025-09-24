@@ -27,7 +27,11 @@ const { data: newsList } = useQuery(getAdminNewsListQueryOptions({ params: { sta
 const getCategory = async () => {
   const res = await getAdminNewsCategoriesList({})
   if (res?.data.list) {
-    categoryColumns.value.unshift({ value: '全部', label: '全部' })
+    categoryColumns.value.unshift(
+      { value: '全部', label: '全部' },
+      { value: '新闻', label: '新闻' },
+      { value: '政策', label: '政策' },
+    )
     res.data.list.forEach((category) => {
       categoryColumns.value.push({ value: category.name, label: category.name })
     })
@@ -49,7 +53,9 @@ const filteredNews = computed(() => {
     const matchKeyword = news.title.toLowerCase().includes(searchKeyword.value.toLowerCase())
     news.content.toLowerCase().includes(searchKeyword.value.toLowerCase())
     const matchCategory =
-      selectedCategory.value === '全部' || news.category === selectedCategory.value
+      selectedCategory.value === '全部' ||
+      news.category === selectedCategory.value ||
+      news.types === selectedCategory.value
     return matchKeyword && matchCategory
   })
 })

@@ -15,7 +15,7 @@
 
     <view class="login-header">
       <image class="login-logo" :src="appLogo" mode="aspectFit"></image>
-      <view class="login-title">{{ appTitle }}</view>
+      <view class="login-title">农产品项目</view>
     </view>
     <view class="login-form">
       <view class="welcome-text">欢迎登录</view>
@@ -104,7 +104,7 @@
           <wd-icon name="right" size="18px" class="login-icon"></wd-icon>
           {{ !registerIf ? '登录' : '注册' }}
         </wd-button>
-        log: {{ loginMode }}reg:{{ registerIf }}
+        <!-- log: {{ loginMode }}reg:{{ registerIf }} -->
       </view>
     </view>
     <!-- 隐私协议勾选 -->
@@ -140,7 +140,9 @@ const redirectRoute = ref('')
 const { success: showSuccess, error: showError } = useToast()
 // 获取环境变量
 const appTitle = ref(import.meta.env.VITE_APP_TITLE || 'Unibest Login')
-const appLogo = ref(import.meta.env.VITE_APP_LOGO || '/static/logo.svg')
+// const appLogo = ref(import.meta.env.VITE_APP_LOGO || '/static/logo.svg')
+
+const appLogo = ref(import.meta.env.VITE_APP_LOGO || '/static/images/logo.png')
 const loginMode = ref(false)
 const registerIf = ref(false)
 const phoneRegex = /^1[3-9]\d{9}$/

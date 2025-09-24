@@ -153,7 +153,7 @@ export async function getAdminNewsList({
         files_url?: string[];
         status?: string;
         author?: string;
-        type?: string;
+        types?: string;
         created_at?: string;
         updated_at?: string;
       }[];

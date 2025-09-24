@@ -24,28 +24,6 @@
           <text class="whitespace-nowrap">{{ data?.created_at }}</text>
         </view>
       </view>
-
-      <!-- 文章内容 -->
-      <view class="mb-6">
-        <!-- <text >{{ data?.content }}</text> -->
-        <rich-text :nodes="data?.content" class="text-gray-700 leading-relaxed">
-          {{ data?.content }}
-        </rich-text>
-      </view>
-
-      <!-- 图片展示 -->
-      <view class="mb-6">
-        <view class="grid grid-cols-3 gap-2">
-          <view v-for="(image, index) in data?.files_url" :key="index" class="aspect-square">
-            <image
-              :src="newsImg(image)"
-              class="w-full h-full object-cover rounded-lg"
-              mode="aspectFill"
-            />
-          </view>
-        </view>
-      </view>
-
       <!-- 标签 -->
       <view class="mb-6 flex flex-wrap gap-2">
         <wd-tag
@@ -57,6 +35,28 @@
         >
           {{ tag }}
         </wd-tag>
+      </view>
+      <!-- 图片展示 -->
+      <view class="flex flex-wrap gap-2 justify-center">
+        <view
+          v-for="(image, index) in data?.files_url"
+          :key="index"
+          class="flex-1 basis-[30%] max-w-[30%] aspect-square justify-center"
+        >
+          <image
+            :src="newsImg(image)"
+            class="w-full h-full object-cover rounded-lg"
+            mode="aspectFill"
+          />
+        </view>
+      </view>
+
+      <!-- 文章内容 -->
+      <view class="mb-6">
+        <!-- <text >{{ data?.content }}</text> -->
+        <rich-text :nodes="data?.content" class="text-gray-700 leading-relaxed">
+          {{ data?.content }}
+        </rich-text>
       </view>
     </view>
   </view>
