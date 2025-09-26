@@ -58,7 +58,7 @@
         "navigationStyle": "custom",
         "navigationBarTitleText": "首页"
       },
-      // "needLogin": true
+      "needLogin": true
     },
     {
       "path": "pages/goods/index",
@@ -67,7 +67,7 @@
         "navigationStyle": "custom",
         "enablePullDownRefresh": false
       },
-      // "needLogin": true
+      "needLogin": true
     },
     {
       "path": "pages/login/index",

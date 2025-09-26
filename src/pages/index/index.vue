@@ -3,19 +3,23 @@
 {
   style: {
     navigationStyle: 'custom',
+    backgroundColor: '#f7f8fa',
   },
   needLogin: true,
 }
 </route>
 <template>
-  <view :style="{ marginTop: safeAreaInsets?.top + 'px' }" class="space-y-4">
+  <view
+    :style="{ marginTop: safeAreaInsets?.top + 'px' }"
+    class="space-y-4 bg-[#f7f8fa] min-h-screen"
+  >
     <view
       class="h-35 flex items-center justify-start font-bold gap-x-5 bg-cover bg-no-repeat bg-center"
       :style="{ backgroundImage: 'url(/static/images/background.png)' }"
     >
       <image
         class="w-15 h-15 rounded-full m-l-3 m-t-(-10)"
-        src="../../static/images/logo.png"
+        src="../../static/images/lingmeng.jpg"
       ></image>
       <view class="text-(2xl green-700) m-t-(-15)">农产品小程序</view>
     </view>
@@ -24,35 +28,39 @@
     </view> -->
 
     <view class="tab-container relative">
-      <view class="absolute left-0 translate-y--50% top-(21px) z-1 text-green text-2xl">
+      <view class="absolute left-4 translate-y--50% top-(21px) z-1 text-green-500 text-2xl">
         新闻动态
       </view>
-
-      <wd-tabs v-model="tab" custom-class="tabs" color="green">
-        <block v-for="item in tabs" :key="item.name">
-          <wd-tab :title="`${item.name}`">
-            <view class="bg-green-100 !min-h-20 rounded-3xl overflow-hidden">
-              <view
-                v-for="(title, index) in item.title.slice(0, 5)"
-                class="text-gray-700 h-10 w-90% flex justify-between items-center px-4"
-                :key="title.id"
-                @click.stop="jumpNewsDetailsPage(title.id)"
-              >
-                <text class="text-ellipsis overflow-hidden whitespace-nowrap font-bold">
-                  {{ title.title }}
-                </text>
-                <view v-if="index === item.title.slice(0, 5).length - 1" @click.stop="jumpNewsPage">
-                  <wd-button type="text">查看更多</wd-button>
+      <view class="w-95vw !rounded-3xl m-a overflow-hidden border-(solid gray-50 1)">
+        <wd-tabs v-model="tab" custom-class="tabs !bg-green-50" class="!bg-green-50" color="green">
+          <block v-for="item in tabs" :key="item.name">
+            <wd-tab :title="`${item.name}`">
+              <view class="!min-h-20 rounded-3xl overflow-hidden">
+                <view
+                  v-for="(title, index) in item.title.slice(0, 5)"
+                  class="text-gray-700 h-10 w-90% flex justify-between items-center px-4"
+                  :key="title.id"
+                  @click.stop="jumpNewsDetailsPage(title.id)"
+                >
+                  <text class="text-ellipsis overflow-hidden whitespace-nowrap font-bold">
+                    {{ title.title }}
+                  </text>
+                  <view
+                    v-if="index === item.title.slice(0, 5).length - 1"
+                    @click.stop="jumpNewsPage"
+                  >
+                    <wd-button type="text">查看更多</wd-button>
+                  </view>
                 </view>
               </view>
-            </view>
-          </wd-tab>
-        </block>
-        <view class="absolute right-3 bottom-(-4) z-1"></view>
-      </wd-tabs>
+            </wd-tab>
+          </block>
+          <view class="absolute right-3 bottom-(-4) z-1"></view>
+        </wd-tabs>
+      </view>
     </view>
     <goodContainer ref="good" @get-goods="getPublicGoodList" />
-    <view flex justify-center>
+    <view class="flex justify-center">
       <wd-button @click="jumpGoodsPage" hairline plain>查看全部</wd-button>
     </view>
   </view>

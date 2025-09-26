@@ -32,9 +32,7 @@ onHide(() => {
 
 <style lang="scss">
 /* stylelint-disable selector-type-no-unknown */
-body {
-  background-color: antiquewhite;
-}
+
 button::after {
   border: none;
 }

@@ -1,5 +1,8 @@
 <template>
-  <view class="goods p-3">
+  <view
+    class="goods p-3 m-y-3 m-a rounded-3xl w-90vw"
+    style="box-shadow: 0 6rpx 20rpx rgba(0, 0, 0, 0.08)"
+  >
     <wd-message-box />
     <view @click="jumpDetailsPage(product.id)">
       <view class="title flex items-center gap-1">
